@@ -1,0 +1,57 @@
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      String   @default("user")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  clockAttempts ClockAttempt[]
+  clockSessions ClockSession[]
+
+  @@map("users")
+}
+
+model ClockAttempt {
+  id        String    @id @default(uuid())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  type      ClockType
+  timestamp DateTime  @default(now())
+  success   Boolean
+  location  String?
+
+  clockInSessions  ClockSession[] @relation("ClockInEvent")
+  clockOutSessions ClockSession[] @relation("ClockOutEvent")
+
+  @@map("clock_attempts")
+}
+
+model ClockSession {
+  id              String        @id @default(uuid())
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId          String
+  clockInEvent    ClockAttempt  @relation("ClockInEvent", fields: [clockInEventId], references: [id], onDelete: Cascade)
+  clockInEventId  String
+  clockOutEvent   ClockAttempt? @relation("ClockOutEvent", fields: [clockOutEventId], references: [id], onDelete: Cascade)
+  clockOutEventId String?
+
+  createdAt DateTime @default(now())
+
+  @@map("clock_sessions")
+}
+
+enum ClockType {
+  IN
+  OUT
+}
