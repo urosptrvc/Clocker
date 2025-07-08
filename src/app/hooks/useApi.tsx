@@ -30,6 +30,7 @@ export function useApi(baseUrl: string = "") {
 
         if (!res.ok) throw new Error(await res.text())
         return res.json()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const apiPost = useCallback(async (url: string, body?: any, options?: RequestOptions) => {
@@ -44,6 +45,7 @@ export function useApi(baseUrl: string = "") {
 
         if (!res.ok) throw new Error(await res.text())
         return res.json()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const apiPut = useCallback(async (url: string, body?: any, options?: RequestOptions) => {
@@ -58,6 +60,7 @@ export function useApi(baseUrl: string = "") {
 
         if (!res.ok) throw new Error(await res.text())
         return res.json()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const apiDelete = useCallback(async (url: string, options?: RequestOptions) => {
@@ -71,6 +74,7 @@ export function useApi(baseUrl: string = "") {
 
         if (!res.ok) throw new Error(await res.text())
         return res.json()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return {

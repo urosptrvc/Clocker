@@ -13,6 +13,8 @@ import {WorkSessionCard} from "@/app/(dashboard)/clocktime/_components/WorkSessi
 import {Skeleton} from "@/components/ui/skeleton";
 
 export default function ClockTime() {
+    const session = useSession();
+    if(!session) redirect("/login");
     const [currentTime, setCurrentTime] = useState(new Date());
 
     useEffect(() => {

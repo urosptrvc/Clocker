@@ -1,6 +1,5 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { Package, PackageCheck, PackageSearch, Truck } from "lucide-react";
 import { ReactNode } from "react";

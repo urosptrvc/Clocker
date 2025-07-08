@@ -5,60 +5,59 @@ import { signIn } from "next-auth/react";
 import AuthCard from "@/components/auth/AuthCard";
 import AuthForm from "@/components/auth/AuthForm";
 import { useNotifier } from "@/app/hooks/useNotifications";
-import { useRouter } from "next/navigation";
+import {redirect} from "next/navigation";
 import LoadSpinner from "@/components/LoadSpinner";
 
 const LoginPage = () => {
-    const [email, setEmail] = useState("");
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const { notifyError, notifySuccess } = useNotifier();
-    const router = useRouter();
-
 
     const handleLogin = async (e: FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
 
         const result = await signIn("credentials", {
-            email,
+            username,
             password,
             redirect: false,
         });
 
-        setIsLoading(false);
 
         if (result?.error) {
             notifyError("Error", result.error);
         } else {
             notifySuccess("Success", "Login successful");
-            router.push("/clocktime");
+            setIsLoading(false);
+            redirect("/clocktime");
         }
+        setIsLoading(false);
+
     };
 
     return (
         <AuthCard
             title="Login"
-            footerLink={{ href: "/auth/register", text: "Nemate nalog? Kliknite ovde da se registrujete" }}
         >
             <LoadSpinner isLoading={isLoading}>
                 <AuthForm
                     fields={[
                         {
-                            type: "email",
-                            placeholder: "Email",
-                            value: email,
-                            setValue: setEmail,
+                            type: "username",
+                            placeholder: "Korisnicko ime",
+                            value: username,
+                            setValue: setUsername,
                         },
                         {
                             type: "password",
-                            placeholder: "Password",
+                            placeholder: "Sifra",
                             value: password,
                             setValue: setPassword,
                         },
                     ]}
                     onSubmitAction={handleLogin}
-                    submitText="Login"
+                    submitText="Prijavi se"
                 />
             </LoadSpinner>
         </AuthCard>

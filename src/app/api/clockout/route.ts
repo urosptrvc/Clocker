@@ -2,12 +2,12 @@ import {NextResponse} from "next/server"
 import {ClockType} from "@prisma/client"
 import {prisma} from "@/lib/prisma";
 import {getServerSession} from "next-auth";
-import {authOptions} from "@/app/api/auth/[...nextauth]/route";
+import {authOptions} from "@/lib/auth";
 
 export async function POST(req: Request) {
     const session = await getServerSession(authOptions)
     if (!session?.user) {
-        return NextResponse.json({error: "Unauthorized"}, {status: 401})
+        return NextResponse.json({error: "Nemate privilegiju"}, {status: 401})
     }
 
     const userId = session.user.id
@@ -25,7 +25,7 @@ export async function POST(req: Request) {
     })
 
     if (!isSuccess) {
-        return NextResponse.json({error: "Clock-out failed"}, {status: 400})
+        return NextResponse.json({error: "Clock-out nije uspeo"}, {status: 400})
     }
 
     const openSession = await prisma.clockSession.findFirst({
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
     })
 
     if (!openSession) {
-        return NextResponse.json({error: "No open clock-in session found"}, {status: 400})
+        return NextResponse.json({error: "Nema trenutno clock-in sesije"}, {status: 400})
     }
 
     const updated = await prisma.clockSession.update({

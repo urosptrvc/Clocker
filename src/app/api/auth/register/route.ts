@@ -1,25 +1,31 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { hash } from "bcrypt"
+import {getServerSession} from "next-auth";
+import {authOptions} from "@/lib/auth";
 
 export async function POST(req: Request) {
     try {
+        const session = await getServerSession(authOptions);
+        if (session?.user?.role !== "admin") {
+            return NextResponse.json({ error: "Nemate privilegiju" }, { status: 401 })
+        }
         const body = await req.json()
-        const { email, password, name, role } = body
+        const { username, password, name, role } = body
 
-        if (!email || !password) {
+        if (!username || !password) {
             return NextResponse.json(
-                { error: "Email and password are required." },
+                { error: "Korisničko ime i lozinka su obavezni." },
                 { status: 400 }
             )
         }
 
         const existingUser = await prisma.user.findUnique({
-            where: { email }
+            where: { username }
         })
         if (existingUser) {
             return NextResponse.json(
-                { error: "User with that email already exists." },
+                { error: "Korisnik sa tim emailom već postoji." },
                 { status: 400 }
             )
         }
@@ -28,7 +34,7 @@ export async function POST(req: Request) {
 
         const newUser = await prisma.user.create({
             data: {
-                email,
+                username,
                 password: hashedPassword,
                 name,
                 role: role && role !== "" ? role : "user"
@@ -36,13 +42,13 @@ export async function POST(req: Request) {
         })
 
         return NextResponse.json(
-            { message: "User created successfully", userId: newUser.id },
+            { message: "Korisnik uspešno kreiran", userId: newUser.id },
             { status: 201 }
         )
     } catch (error) {
         if (error instanceof Error) {
             return NextResponse.json(
-                { error: error.message || "Something went wrong." },
+                { error: error.message || "Došlo je do greške." },
                 { status: 500 }
             )
         }

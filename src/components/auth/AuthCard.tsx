@@ -1,19 +1,14 @@
 import { ReactNode } from "react";
 import Image from "next/image";
-import { CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
-import Link from "next/link";
+import { CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
 
 type Props = {
     title: string;
     children: ReactNode;
-    footerLink: {
-        href: string;
-        text: string;
-    }
 };
 
-const AuthCard = ({ title, children, footerLink }: Props) => {
+const AuthCard = ({ title, children }: Props) => {
     return (
         <div className="relative z-10 flex min-h-screen items-center justify-center p-4">
             <motion.div
@@ -24,16 +19,11 @@ const AuthCard = ({ title, children, footerLink }: Props) => {
             >
                     <CardHeader>
                         <div className="flex justify-center mb-4">
-                            <Image src="/favicon.ico" alt="Logo" width={50} height={50} />
+                            <Image src="/logo.png" alt="Logo" width={50} height={50} />
                         </div>
                         <CardTitle className="text-center">{title}</CardTitle>
                     </CardHeader>
                     <CardContent>{children}</CardContent>
-                    <CardFooter className="flex items-center justify-center">
-                        <Link href={footerLink.href} className="text-blue-500 text-sm">
-                            {footerLink.text}
-                        </Link>
-                    </CardFooter>
             </motion.div>
         </div>
     );

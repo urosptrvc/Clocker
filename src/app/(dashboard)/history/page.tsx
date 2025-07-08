@@ -9,8 +9,12 @@ import {SessionSummarySkeleton} from "@/app/(dashboard)/history/_components/sess
 import {SessionSummary} from "@/app/(dashboard)/history/_components/session-summary";
 import {SessionsListSkeleton} from "@/app/(dashboard)/history/_components/sessions-list-skeleton";
 import {SessionsList} from "@/app/(dashboard)/history/_components/sessions-list";
+import {redirect} from "next/navigation";
+import {useSession} from "next-auth/react";
 
 export default function WorkSessionTracker() {
+    const session = useSession();
+    if(!session) redirect("/login");
     const [sortBy, setSortBy] = useState<"date" | "duration">("date")
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc")
     const [filterBy, setFilterBy] = useState<"all" | "today" | "week" | "month" | "custom-month">("all")

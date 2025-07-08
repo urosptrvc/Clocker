@@ -15,7 +15,7 @@ export async function middleware(req: NextRequest) {
 
     const { pathname } = req.nextUrl;
 
-    if ((pathname === "/auth/login" && session) || (pathname === "/auth/register" && session)) {
+    if (pathname === "/auth/login" && session){
         return NextResponse.redirect(new URL("/clocktime", req.url));
     }
 

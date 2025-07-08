@@ -43,11 +43,11 @@ const PopUp = ({
                     <DialogDescription>{textDesc}</DialogDescription>
                     <DialogFooter>
                         <Button
-                            variant="ghost"
+                            variant="outline"
                             onClick={() => onOpenChange(false)}
                             disabled={isLoading}
                         >
-                            Cancel
+                            Prekini
                         </Button>
                         <Button
                             variant="destructive"
