@@ -36,7 +36,7 @@ export default function ClockTime() {
         <div className="max-w-4xl mx-auto p-4">
             <div className="mb-6 flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold mb-2">Clock Time</h1>
+                    <h1 className="text-3xl font-bold mb-2 text-white">Clock Time</h1>
                     <p className="text-muted-foreground">Prati svoje vreme na poslu</p>
                 </div>
                 <Link href="/history">

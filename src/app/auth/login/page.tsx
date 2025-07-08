@@ -28,7 +28,7 @@ const LoginPage = () => {
         if (result?.error) {
             notifyError("Error", result.error);
         } else {
-            notifySuccess("Success", "Login successful");
+            notifySuccess("Success", "Uspesna prijava");
             redirect("/clocktime");
             setIsLoading(false);
         }
@@ -38,7 +38,7 @@ const LoginPage = () => {
 
     return (
         <AuthCard
-            title="Login"
+            title="Energo Solutions Clocker"
         >
             <LoadSpinner isLoading={isLoading}>
                 <AuthForm
