@@ -2,9 +2,11 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ActiveSessionDisplay } from "./ActiveSessionDisplay";
 import { ClockInForm } from "./ClockInForm";
+import {Loader2} from "lucide-react";
 
 export function WorkSessionCard({ isClocked, activeSession, clockActions }) {
     const {
+        load,
         location,
         setLocation,
         notes,
@@ -29,12 +31,17 @@ export function WorkSessionCard({ isClocked, activeSession, clockActions }) {
                             size="lg"
                             className="w-full"
                             variant="destructive"
+                            disabled={load}
                         >
+                            {load ? (
+                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                            ) : null}
                             Zavrsi radno vreme
                         </Button>
                     </div>
                 ) : (
                     <ClockInForm
+                        load={load}
                         location={location}
                         setLocation={setLocation}
                         notes={notes}

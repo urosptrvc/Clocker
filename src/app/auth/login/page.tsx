@@ -29,8 +29,8 @@ const LoginPage = () => {
             notifyError("Error", result.error);
         } else {
             notifySuccess("Success", "Login successful");
-            setIsLoading(false);
             redirect("/clocktime");
+            setIsLoading(false);
         }
         setIsLoading(false);
 
