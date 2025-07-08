@@ -17,6 +17,7 @@ import {redirect} from "next/navigation";
 import {Dialog, DialogContent, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
 import {Button} from "@/components/ui/button";
 import RegisterModal from "@/app/admin/_components/register/RegisterModal";
+import {AdminSkeleton} from "@/app/admin/_components/admin-skeleton";
 
 export default function Admin() {
     const { users, isLoading } = useUsers()
@@ -74,7 +75,7 @@ export default function Admin() {
     }
 
     if (isLoading) {
-        return <div>Loading...</div>
+        return <AdminSkeleton />
     }
 
     return (
