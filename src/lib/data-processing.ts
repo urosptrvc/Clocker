@@ -3,15 +3,19 @@ export const processUserSessions = (user)=> {
   return user.clockSessions.map((session) => {
     const clockInAttempt = user.clockAttempts.find((attempt) => attempt.id === session.clockInEventId)
     const clockOutAttempt = user.clockAttempts.find((attempt) => attempt.id === session.clockOutEventId)
-
     if (!clockInAttempt || !clockOutAttempt) {
       return {
+        hourly_rate: user.hourly_rate,
         id: session.id,
         userId: session.userId,
         clockIn: session.createdAt,
         clockOut: session.createdAt,
         duration: 0,
         createdAt: session.createdAt,
+        clockInLocation: null,
+        clockOutLocation: null,
+        clockInNotes: null,
+        clockOutNotes: null,
       }
     }
 
@@ -20,12 +24,17 @@ export const processUserSessions = (user)=> {
     )
 
     return {
+      hourly_rate: user.hourly_rate,
       id: session.id,
       userId: session.userId,
       clockIn: clockInAttempt.timestamp,
       clockOut: clockOutAttempt.timestamp,
       duration,
       createdAt: session.createdAt,
+      clockInLocation: clockInAttempt.location,
+      clockOutLocation: clockOutAttempt.location,
+      clockInNotes: clockInAttempt.notes,
+      clockOutNotes: clockOutAttempt.notes,
     }
   })
 }
@@ -86,6 +95,7 @@ export const getDetailedUserAnalytics = (user) => {
 
   return {
     totalSessions: sessions.length,
+    hourly_rate: user.hourly_rate,
     totalDuration: sessions.reduce((sum, s) => sum + s.duration, 0),
     averageSession: sessions.length > 0 ? sessions.reduce((sum, s) => sum + s.duration, 0) / sessions.length : 0,
     todayStats: {

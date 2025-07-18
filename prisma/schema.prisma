@@ -8,13 +8,14 @@ generator client {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  username  String   @unique
-  password  String
-  name      String?
-  role      String   @default("user")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(cuid())
+  username    String   @unique
+  password    String
+  name        String?
+  role        String   @default("user")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  hourly_rate Decimal? @db.Decimal(10, 2)
 
   clockAttempts ClockAttempt[]
   clockSessions ClockSession[]
@@ -23,14 +24,14 @@ model User {
 }
 
 model ClockAttempt {
-  id        String    @id @default(uuid())
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
-  type      ClockType
-  timestamp DateTime  @default(now())
-  success   Boolean
-  location  String?
-
+  id               String         @id @default(uuid())
+  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId           String
+  type             ClockType
+  timestamp        DateTime       @default(now())
+  success          Boolean
+  location         String?
+  notes            String?
   clockInSessions  ClockSession[] @relation("ClockInEvent")
   clockOutSessions ClockSession[] @relation("ClockOutEvent")
 

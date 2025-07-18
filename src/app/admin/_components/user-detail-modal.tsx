@@ -14,7 +14,7 @@ import {exportSingleUserToExcel} from "@/lib/excel-export";
 export function UserDetailModal({ user, isOpen, onClose, dateRange: globalDateRange }) {
   const [localDateRange, setLocalDateRange] = useState(globalDateRange)
   const [isExporting, setIsExporting] = useState(false)
-
+  console.log("AA",user)
   if (!user) return null
 
   const analytics = getDetailedUserAnalytics(user)

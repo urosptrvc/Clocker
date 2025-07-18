@@ -1,6 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Timer } from "lucide-react"
-import { formatDuration } from "@/lib/helper"
+import {formatDuration, formatSalary} from "@/lib/helper"
 
 interface Session {
   id: string
@@ -14,9 +14,10 @@ interface SessionSummaryProps {
   totalDuration: number
   filterDescription: string
   filterBy: string
+  rate: any
 }
 
-export function SessionSummary({ sessions, totalDuration, filterDescription, filterBy }: SessionSummaryProps) {
+export function SessionSummary({rate, sessions, totalDuration, filterDescription, filterBy }: SessionSummaryProps) {
   return (
     <Card>
       <CardHeader>
@@ -26,7 +27,7 @@ export function SessionSummary({ sessions, totalDuration, filterDescription, fil
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 mb-4">
           <div className="text-center">
             <div className="text-2xl font-bold text-primary">{sessions.length}</div>
             <div className="text-sm text-muted-foreground">Ukupno Sesija</div>
@@ -34,6 +35,10 @@ export function SessionSummary({ sessions, totalDuration, filterDescription, fil
           <div className="text-center">
             <div className="text-2xl font-bold text-primary">{formatDuration(totalDuration)}</div>
             <div className="text-sm text-muted-foreground">Ukupno Vremena</div>
+          </div>
+          <div className="text-center">
+            <div className="text-2xl font-bold text-primary">{formatSalary(totalDuration,rate)}</div>
+            <div className="text-sm text-muted-foreground">Zarada</div>
           </div>
           <div className="text-center">
             <div className="text-2xl font-bold text-primary">

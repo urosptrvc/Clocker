@@ -1,8 +1,8 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import {FormEvent, useState} from "react";
 import AuthForm from "@/components/auth/AuthForm";
-import { useNotifier } from "@/app/hooks/useNotifications";
+import {useNotifier} from "@/app/hooks/useNotifications";
 import {
     Select,
     SelectTrigger,
@@ -11,50 +11,63 @@ import {
     SelectItem,
 } from "@/components/ui/select";
 import LoadSpinner from "@/components/LoadSpinner";
-import { CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {CardContent, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
-import { DialogClose } from "@/components/ui/dialog";
+import {Button} from "@/components/ui/button";
+import {DialogClose} from "@/components/ui/dialog";
+import {useApi} from "@/app/hooks/useApi";
 
 type RegisterModalProps = {
     onSuccess?: () => void;
 };
 
-const RegisterModal = ({ onSuccess }: RegisterModalProps) => {
+const RegisterModal = ({onSuccess}: RegisterModalProps) => {
     const [name, setName] = useState("");
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [satnica, setSatnica] = useState("");
     const [role, setRole] = useState("");
-    const { notifyError, notifySuccess } = useNotifier();
+    const {notifyError, notifySuccess} = useNotifier();
     const [isLoading, setIsLoading] = useState(false);
-
+    const {apiPost} = useApi()
     const handleRegister = async (e: FormEvent) => {
         e.preventDefault();
-        setIsLoading(true);
 
-        const res = await fetch("/api/auth/register", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username, password, name, role }),
-        });
-
-        const data = await res.json();
-        setIsLoading(false);
-
-        if (!res.ok) {
-            notifyError("Greška", data.error);
+        if (!name || !username || !password || !satnica || !role) {
+            notifyError("Greška", "Sva polja su obavezna");
             return;
         }
 
-        notifySuccess("Uspeh", "Korisnik je uspešno registrovan");
-        if (onSuccess) onSuccess();
+        try {
+            setIsLoading(true);
+
+            const payload = {
+                username, password, name, role, satnica
+            };
+            await apiPost("/api/auth/register", payload);
+            setIsLoading(false);
+
+            // Resetuj sva polja
+            setName("");
+            setUsername("");
+            setPassword("");
+            setSatnica("");
+            setRole("");
+
+            notifySuccess("Uspeh", "Korisnik je uspešno registrovan");
+            if (onSuccess) onSuccess();
+        } catch (err) {
+            setIsLoading(false);
+            notifyError("Greška", err);
+        }
     };
+
 
     return (
         <div>
             <CardHeader>
                 <div className="flex justify-center mb-4">
-                    <Image src="/logo.png" alt="Logo" width={50} height={50} />
+                    <Image src="/logo.png" alt="Logo" width={50} height={50}/>
                 </div>
                 <CardTitle className="text-center">Registruj novog korisnika</CardTitle>
             </CardHeader>
@@ -81,14 +94,21 @@ const RegisterModal = ({ onSuccess }: RegisterModalProps) => {
                                 value: password,
                                 setValue: setPassword,
                             },
+                            {
+                                type: "hourly_rate",
+                                placeholder: "Satnica",
+                                value: satnica,
+                                setValue: setSatnica,
+                            },
                         ]}
                         extraFields={
-                            <Select onValueChange={setRole}>
+                            <Select value={role} onValueChange={setRole}>
                                 <SelectTrigger className="w-full">
-                                    <SelectValue placeholder="Odaberi ulogu" />
+                                    <SelectValue placeholder="Odaberi ulogu"/>
                                 </SelectTrigger>
                                 <SelectContent>
-                                    <SelectItem value="user">Korisnik</SelectItem>
+                                    <SelectItem value="kancelarija">Kancelarija</SelectItem>
+                                    <SelectItem value="teren">Terenac</SelectItem>
                                     <SelectItem value="admin">Administrator</SelectItem>
                                 </SelectContent>
                             </Select>

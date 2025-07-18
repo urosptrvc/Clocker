@@ -18,6 +18,11 @@ export async function GET() {
         },
     })
 
+    const user = await prisma.user.findUnique({
+        where: { id: userId},
+
+    })
+
     const formatted = sessions.map((sess) => ({
         id: sess.id,
         clockIn: sess.clockInEvent.timestamp,
@@ -27,6 +32,7 @@ export async function GET() {
             ? Math.floor((sess.clockOutEvent.timestamp.getTime() - sess.clockInEvent.timestamp.getTime()) / 1000)
             : null,
         notes: null,
+        hourly_rate: user.hourly_rate
     }))
 
     return NextResponse.json(formatted)

@@ -13,6 +13,13 @@ export const formatDuration = (seconds: number) => {
     return hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`
 }
 
+export const formatSalary = (seconds: number, hourlyRate: any) => {
+    console.log("RATE",hourlyRate)
+    const hours = seconds / 3600
+    const salary = hours * hourlyRate
+    return salary.toFixed(2) + ' RSD'
+}
+
 export const formatDate = (date: Date | string) => {
     const dateObj = typeof date === 'string' ? new Date(date) : date;
     const formatted = dateObj.toLocaleString("sr-Latn-RS", {
@@ -30,7 +37,7 @@ export const getMonthDateRange = (monthString: string): { startDate: Date; endDa
     const startDate = new Date(year, month - 1, 1);
     const endDate = new Date(year, month, 0, 23, 59, 59, 999);
     console.log(startDate, endDate);
-    return { startDate, endDate };
+    return {startDate, endDate};
 };
 
 
@@ -58,7 +65,7 @@ export const getMonthOptions = (): Array<{ value: string; label: string }> => {
         })
         label = label.charAt(0).toUpperCase() + label.slice(1)
 
-        options.push({ value, label })
+        options.push({value, label})
     }
     return options
 }

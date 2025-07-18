@@ -41,7 +41,7 @@ export default function Admin() {
         return users.filter(
             (user) =>
                 user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                user.email.toLowerCase().includes(searchTerm.toLowerCase()),
+                user.username.toLowerCase().includes(searchTerm.toLowerCase()),
         )
     }, [users, searchTerm])
 

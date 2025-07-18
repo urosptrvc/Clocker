@@ -21,7 +21,6 @@ export default function WorkSessionTracker() {
     const [selectedMonth, setSelectedMonth] = useState<string>(new Date().toISOString().slice(0, 7))
 
     const {sessions, isLoading} = useSessions()
-
     const filteredAndSortedSessions = useMemo(() => {
         let filtered = Array.isArray(sessions) ? [...sessions] : []
         const now = new Date()
@@ -111,6 +110,7 @@ export default function WorkSessionTracker() {
                         totalDuration={totalDuration}
                         filterDescription={getFilterDescription()}
                         filterBy={filterBy}
+                        rate={sessions[0].hourly_rate}
                     />
                 )}
             </Suspense>

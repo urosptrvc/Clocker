@@ -11,15 +11,14 @@ const predefinedLocations = [
     { value: "ukg", label: "Univerzitet u Kragujevcu" },
 ];
 
-export function ClockInForm({ load, setLocation, notes, setNotes, onSubmit }) {
+export function ClockOutForm({ load, setLocation, notes, setNotes, onSubmit }) {
     const [customLocation, setCustomLocation] = useState("");
     const [isCustom, setIsCustom] = useState(false);
-    const {notifyError} = useNotifier();
-
+    const {notifyError} = useNotifier()
     const handleLocationChange = (value) => {
         if (value === "custom") {
             setIsCustom(true);
-            setLocation(""); // Reset location for manual entry
+            setLocation("");
         } else {
             setIsCustom(false);
             setLocation(value);
@@ -43,13 +42,13 @@ export function ClockInForm({ load, setLocation, notes, setNotes, onSubmit }) {
                     <Label htmlFor="location">Lokacija</Label>
                     <Select onValueChange={handleLocationChange}>
                         <SelectTrigger>
-                            <SelectValue placeholder="Izaberite lokaciju" />
+                            <SelectValue placeholder="Choose a location" />
                         </SelectTrigger>
                         <SelectContent>
                             {predefinedLocations.map((loc) => (
                                 <SelectItem key={loc.value} value={loc.value}>{loc.label}</SelectItem>
                             ))}
-                            <SelectItem value="custom">Drugo (rucni unos)</SelectItem>
+                            <SelectItem value="custom">Other (type manually)</SelectItem>
                         </SelectContent>
                     </Select>
 
@@ -68,7 +67,7 @@ export function ClockInForm({ load, setLocation, notes, setNotes, onSubmit }) {
                 </div>
 
                 <div>
-                    <Label htmlFor="notes">Opis</Label>
+                    <Label htmlFor="notes">Notes</Label>
                     <Input
                         id="notes"
                         value={notes}
@@ -78,9 +77,9 @@ export function ClockInForm({ load, setLocation, notes, setNotes, onSubmit }) {
                 </div>
             </div>
 
-            <Button type="submit" size="lg" className="w-full" disabled={load}>
+            <Button type="submit" size="lg" className="w-full" variant="destructive" disabled={load}>
                 {load && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-                Pocni radno vreme
+                Zavrsi radno vreme
             </Button>
         </form>
     );

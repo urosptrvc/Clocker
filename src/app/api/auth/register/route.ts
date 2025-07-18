@@ -11,7 +11,7 @@ export async function POST(req: Request) {
             return NextResponse.json({ error: "Nemate privilegiju" }, { status: 401 })
         }
         const body = await req.json()
-        const { username, password, name, role } = body
+        const { username, password, name, role, satnica } = body
 
         if (!username || !password) {
             return NextResponse.json(
@@ -37,7 +37,8 @@ export async function POST(req: Request) {
                 username,
                 password: hashedPassword,
                 name,
-                role: role && role !== "" ? role : "user"
+                role: role && role !== "" ? role : "user",
+                hourly_rate: satnica
             }
         })
 

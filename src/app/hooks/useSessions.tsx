@@ -14,7 +14,6 @@ export function useSessions() {
         setIsLoading(true);
         try {
             const result = await apiGet("/api/sessions");
-            console.log("RESULT", result);
             if (result) {
                 setSessions(result);
             } else {
