@@ -23,7 +23,7 @@ export function SessionFilters({
   return (
       <div className="flex flex-wrap gap-2">
         <Select value={filterBy} onValueChange={(value: any) => setFilterBy(value)}>
-          <SelectTrigger className="w-40 text-white">
+          <SelectTrigger className="w-40 ">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -38,7 +38,7 @@ export function SessionFilters({
         {filterBy === "custom-month" && (
             <Popover>
               <PopoverTrigger asChild>
-                <Button variant="outline" className="w-48 justify-start bg-transparent text-white">
+                <Button variant="outline" className="w-48 justify-start bg-transparent ">
                   <CalendarDays className="mr-2 h-4 w-4" />
                   {getMonthOptions().find((opt) => opt.value === selectedMonth)?.label || "Odaberi mesec"}
                 </Button>
@@ -49,7 +49,7 @@ export function SessionFilters({
                       <Button
                           key={option.value}
                           variant={selectedMonth === option.value ? "default" : "ghost"}
-                          className="w-full justify-start rounded-none text-white"
+                          className="w-full justify-start rounded-none "
                           onClick={() => setSelectedMonth(option.value)}
                       >
                         {option.label}
@@ -61,7 +61,7 @@ export function SessionFilters({
         )}
 
         <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
-          <SelectTrigger className="w-44 text-white">
+          <SelectTrigger className="w-44 ">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -74,7 +74,7 @@ export function SessionFilters({
             variant="outline"
             size="sm"
             onClick={toggleSortOrder}
-            className="flex items-center gap-1 bg-transparent text-white"
+            className="flex items-center gap-1 bg-transparent "
         >
           {sortOrder === "asc" ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
           {sortOrder === "asc" ? "Rastuce" : "Opadajuce"}

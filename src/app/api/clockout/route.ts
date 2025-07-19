@@ -5,6 +5,7 @@ import {getServerSession} from "next-auth";
 import {authOptions} from "@/lib/auth";
 import {verifyLocationDynamic} from "@/lib/location";
 import {KNOWN_LOCATIONS} from "@/lib/const";
+import {saveImage} from "@/lib/saveImage";
 
 export async function POST(req: Request) {
     const session = await getServerSession(authOptions)
@@ -13,8 +14,31 @@ export async function POST(req: Request) {
     }
 
     const userId = session.user.id
-    const body = await req.json()
-    const {location, notes, coords} = body;
+
+    const contentType = req.headers.get("content-type");
+
+    let location = "";
+    let notes = "";
+    let coords: { lat: number; lng: number } = {lat: 0, lng: 0};
+    const imagePaths = {front: null, back: null, mileage: null};
+
+    if (contentType?.includes("multipart/form-data")) {
+        const formData = await req.formData();
+        location = formData.get("location") as string;
+        notes = formData.get("notes") as string;
+        coords = JSON.parse(formData.get("coords") as string);
+
+        imagePaths.front = await saveImage(formData.get("frontTruckImage") as File, userId,"CLOCKOUT")
+        imagePaths.back = await saveImage(formData.get("backTruckImage") as File, userId,"CLOCKOUT")
+        imagePaths.mileage = await saveImage(formData.get("mileageImage") as File, userId,"CLOCKOUT")
+
+    } else {
+        const body = await req.json();
+        location = body.location;
+        notes = body.notes;
+        coords = body.coords;
+    }
+
     let isSuccess = true;
     if (KNOWN_LOCATIONS[location]) {
         try {
@@ -37,6 +61,9 @@ export async function POST(req: Request) {
             location: KNOWN_LOCATIONS[location]?.locc,
             notes: notes,
             success: isSuccess,
+            FrontTruckPath: imagePaths.front,
+            BackTruckPath: imagePaths.back,
+            DashboardPath: imagePaths.mileage,
         },
     })
 

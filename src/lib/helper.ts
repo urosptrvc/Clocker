@@ -14,7 +14,6 @@ export const formatDuration = (seconds: number) => {
 }
 
 export const formatSalary = (seconds: number, hourlyRate: any) => {
-    console.log("RATE",hourlyRate)
     const hours = seconds / 3600
     const salary = hours * hourlyRate
     return salary.toFixed(2) + ' RSD'

@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback } from "react"
+import {useCallback} from "react"
 
 type RequestOptions = {
     headers?: Record<string, string>
@@ -33,20 +33,30 @@ export function useApi(baseUrl: string = "") {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
-    const apiPost = useCallback(async (url: string, body?: any, options?: RequestOptions) => {
-        const res = await fetch(buildUrl(url, options?.params), {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                ...(options?.headers || {}),
-            },
-            body: JSON.stringify(body),
-        })
+    const apiPost = useCallback(
+        async (url: string, body?: any, options?: RequestOptions) => {
+            const isFormData = typeof body !== "undefined" && body instanceof FormData;
 
-        if (!res.ok) throw new Error(await res.text())
-        return res.json()
+            const res = await fetch(buildUrl(url, options?.params), {
+                method: "POST",
+                headers: isFormData
+                    ? {
+                        ...(options?.headers || {}),
+                    }
+                    : {
+                        "Content-Type": "application/json",
+                        ...(options?.headers || {}),
+                    },
+                body: isFormData ? body : JSON.stringify(body),
+            });
+
+            if (!res.ok) throw new Error(await res.text());
+            return res.json();
+        },
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
+        []
+    );
+
 
     const apiPut = useCallback(async (url: string, body?: any, options?: RequestOptions) => {
         const res = await fetch(buildUrl(url, options?.params), {

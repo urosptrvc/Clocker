@@ -21,6 +21,7 @@ export default function WorkSessionTracker() {
     const [selectedMonth, setSelectedMonth] = useState<string>(new Date().toISOString().slice(0, 7))
 
     const {sessions, isLoading} = useSessions()
+
     const filteredAndSortedSessions = useMemo(() => {
         let filtered = Array.isArray(sessions) ? [...sessions] : []
         const now = new Date()
@@ -85,7 +86,7 @@ export default function WorkSessionTracker() {
         <div className="container mx-auto p-6 space-y-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-white">Radne Sesije</h1>
+                    <h1 className="text-3xl font-bold">Radne Sesije</h1>
                     <p className="text-muted-foreground">Prati svoje vreme rada i zarade</p>
                 </div>
 
@@ -110,7 +111,7 @@ export default function WorkSessionTracker() {
                         totalDuration={totalDuration}
                         filterDescription={getFilterDescription()}
                         filterBy={filterBy}
-                        rate={sessions[0].hourly_rate}
+                        rate={sessions?.[0]?.hourly_rate ?? 0}
                     />
                 )}
             </Suspense>

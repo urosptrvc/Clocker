@@ -24,14 +24,19 @@ model User {
 }
 
 model ClockAttempt {
-  id               String         @id @default(uuid())
-  user             User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId           String
-  type             ClockType
-  timestamp        DateTime       @default(now())
-  success          Boolean
-  location         String?
-  notes            String?
+  id        String    @id @default(uuid())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  type      ClockType
+  timestamp DateTime  @default(now())
+  success   Boolean
+  location  String?
+  notes     String?
+
+  FrontTruckPath String?
+  BackTruckPath  String?
+  DashboardPath  String?
+
   clockInSessions  ClockSession[] @relation("ClockInEvent")
   clockOutSessions ClockSession[] @relation("ClockOutEvent")
 
