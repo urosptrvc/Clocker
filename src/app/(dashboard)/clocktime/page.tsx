@@ -13,10 +13,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { WorkSessionCardField } from "@/app/(dashboard)/clocktime/_components/terenski_radnik/WorkSessionCardField";
 
 export default function ClockTime() {
-    const { data: session } = useSession();
-    if (!session) redirect("/login");
+    const session = useSession();
+    if (!session) redirect("/auth/login");
 
-    const userRole = session?.user?.role;
+    const userRole = session?.data?.user?.role;
     const { isLoading, clocked, activeSession, fetchClockedState } = useClockingState();
     const clockActions = useClockActions(fetchClockedState);
 

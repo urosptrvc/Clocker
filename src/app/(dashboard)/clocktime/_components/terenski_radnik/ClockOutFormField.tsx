@@ -7,11 +7,7 @@ import {Input} from "@/components/ui/input"
 import {Select, SelectTrigger, SelectContent, SelectItem, SelectValue} from "@/components/ui/select"
 import {Loader2, Upload, X} from "lucide-react"
 import {useNotifier} from "@/app/hooks/useNotifications"
-
-const predefinedLocations = [
-    {value: "ftncacak", label: "Fakultet Tehničkih Nauka u Čačku"},
-    {value: "ukg", label: "Univerzitet u Kragujevcu"},
-]
+import {predefinedLocations} from "@/lib/const";
 
 export function ClockOutFormField({
                                       load,
