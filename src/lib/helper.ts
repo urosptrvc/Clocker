@@ -35,7 +35,6 @@ export const getMonthDateRange = (monthString: string): { startDate: Date; endDa
     const [year, month] = monthString.split("-").map(Number);
     const startDate = new Date(year, month - 1, 1);
     const endDate = new Date(year, month, 0, 23, 59, 59, 999);
-    console.log(startDate, endDate);
     return {startDate, endDate};
 };
 

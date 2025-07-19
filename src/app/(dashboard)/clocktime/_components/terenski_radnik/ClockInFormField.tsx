@@ -74,8 +74,9 @@ export function ClockInFormField({
                     </label>
                 ) : (
                     <div className="relative">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
-                            src={URL.createObjectURL(image) || "/placeholder.svg"}
+                            src={URL.createObjectURL(image)}
                             alt={label}
                             className="w-full h-32 object-cover rounded-lg"
                         />
