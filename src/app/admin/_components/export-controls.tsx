@@ -32,7 +32,7 @@ export function ExportControls({ users, dateRange, onDateRangeChange }) {
                         </div>
                         <DatePickerWithRange
                             selected={dateRange}
-                            onSelect={(range) => {
+                            onSelectAction={(range) => {
                                 if (range?.from && range?.to) {
                                     onDateRangeChange(range)
                                 }

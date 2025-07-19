@@ -13,10 +13,10 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 interface DatePickerWithRangeProps {
     className?: string
     selected?: DateRange
-    onSelect?: (range: DateRange | undefined) => void
+    onSelectAction?: (range: DateRange | undefined) => void
 }
 
-export function DatePickerWithRange({ className, selected, onSelect }: DatePickerWithRangeProps) {
+export function DatePickerWithRange({ className, selected, onSelectAction }: DatePickerWithRangeProps) {
     const [isOpen, setIsOpen] = React.useState(false)
 
     const presets = [
@@ -65,12 +65,12 @@ export function DatePickerWithRange({ className, selected, onSelect }: DatePicke
     ]
 
     const handlePresetClick = (preset: { label: string; range: DateRange }) => {
-        onSelect?.(preset.range)
+        onSelectAction?.(preset.range)
         setIsOpen(false)
     }
 
     const handleCalendarSelect = (range: DateRange | undefined) => {
-        onSelect?.(range)
+        onSelectAction?.(range)
         // Only close when both from and to dates are selected
         if (range?.from && range?.to) {
             setIsOpen(false)

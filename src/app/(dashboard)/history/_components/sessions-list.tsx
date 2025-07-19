@@ -7,6 +7,7 @@ interface Session {
   clockIn: string
   clockOut: string
   duration: number
+  hourly_rate: string
 }
 
 interface SessionsListProps {

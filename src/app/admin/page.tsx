@@ -10,7 +10,6 @@ import {ExportControls} from "@/app/admin/_components/export-controls";
 import {SessionsTab} from "@/app/admin/_components/sessions-tab";
 import {AttemptsTab} from "@/app/admin/_components/attempts-tab";
 import {UserCard} from "@/app/admin/_components/user-card";
-import {UserDetailModal} from "@/app/admin/_components/user-detail-modal";
 import {StatsOverview} from "@/app/admin/_components/stats-overview";
 import {useSession} from "next-auth/react";
 import {redirect} from "next/navigation";
@@ -23,8 +22,6 @@ export default function Admin() {
     const { users, isLoading } = useUsers()
     const session =  useSession()
     const [searchTerm, setSearchTerm] = useState("")
-    const [selectedUserForModal, setSelectedUserForModal] = useState(null)
-    const [isUserModalOpen, setIsUserModalOpen] = useState(false)
     const [dateRange, setDateRange] = useState({
         from: new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000),
         to: new Date(),
@@ -70,8 +67,7 @@ export default function Admin() {
     }, [users, allProcessedSessions])
 
     const handleUserClick = (user) => {
-        setSelectedUserForModal(user)
-        setIsUserModalOpen(true)
+        redirect(`/admin/${user.id}`)
     }
 
     if (isLoading) {
@@ -136,13 +132,6 @@ export default function Admin() {
                     <AttemptsTab users={users} />
                 </TabsContent>
             </Tabs>
-
-            <UserDetailModal
-                user={selectedUserForModal}
-                isOpen={isUserModalOpen}
-                onClose={() => setIsUserModalOpen(false)}
-                dateRange={dateRange}
-            />
         </div>
     )
 }

@@ -36,7 +36,7 @@ export async function verifyLocationDynamic(location: string, userCoords: {lat: 
 
         console.log(`Distance od ${location}: ${distance.toFixed(2)} metara`);
 
-        const ALLOWED_RADIUS = 1000;
+        const ALLOWED_RADIUS = 400;
         return distance <= ALLOWED_RADIUS;
 
     } catch (error) {
