@@ -14,23 +14,28 @@ import {
 
 export function ThemeSwitcherBtn() {
     const { theme, setTheme } = useTheme()
-    const [isSystemTheme, setIsSystemTheme] = React.useState(false)
+    const [mounted, setMounted] = React.useState(false)
 
     React.useEffect(() => {
-        setIsSystemTheme(theme === "system")
-    }, [theme])
+        setMounted(true)
+    }, [])
+
+    if (!mounted) return null
+
+    const icon =
+        theme === "system" ? (
+            <Monitor className="h-[1.2rem] w-[1.2rem]" />
+        ) : theme === "dark" ? (
+            <Moon className="h-[1.2rem] w-[1.2rem]" />
+        ) : (
+            <Sun className="h-[1.2rem] w-[1.2rem]" />
+        )
 
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="icon">
-                    {isSystemTheme ? (
-                        <Monitor className="h-[1.2rem] w-[1.2rem]" />
-                    ) : theme === "dark" ? (
-                        <Moon className="h-[1.2rem] w-[1.2rem]" />
-                    ) : (
-                        <Sun className="h-[1.2rem] w-[1.2rem]" />
-                    )}
+                    {icon}
                     <span className="sr-only">Promeni temu</span>
                 </Button>
             </DropdownMenuTrigger>

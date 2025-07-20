@@ -52,11 +52,12 @@ export async function POST(req: Request) {
         return NextResponse.json({error: "Clock-in nije uspeo"}, {status: 400});
     }
 
+    const locationPlace = KNOWN_LOCATIONS[location]?.locc==null ? location : KNOWN_LOCATIONS[location]?.locc
     const attempt = await prisma.clockAttempt.create({
         data: {
             userId,
             type: ClockType.IN,
-            location: KNOWN_LOCATIONS[location]?.locc,
+            location: locationPlace,
             notes,
             success: isSuccess,
             FrontTruckPath: imagePaths.front,

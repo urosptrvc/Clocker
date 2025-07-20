@@ -139,11 +139,6 @@ export default function UserDetailPage() {
                                             <Shield className="h-3 w-3 mr-1"/>
                                             {user.role}
                                         </Badge>
-                                        {user.hourly_rate && (
-                                            <Badge variant="outline" className="w-fit">
-                                                <DollarSign className="h-3 w-3 mr-1"/>{user.hourly_rate}/sat
-                                            </Badge>
-                                        )}
                                     </div>
                                 </div>
                                 <p className="text-muted-foreground truncate">{user.username}</p>
@@ -270,8 +265,8 @@ export default function UserDetailPage() {
                                     </div>
                                     <div className="text-center p-6 border rounded-lg bg-accent">
                                         <div className="text-xl font-semibold ">{user.hourly_rate} RSD/sat</div>
-                                        <div className="text-sm text-muted-foreground mt-2">Satnica</div>
-                                        <div className="text-xs text-muted-foreground">Trenutna stopa</div>
+                                        <div className="text-sm mt-2">Satnica</div>
+                                        <div className="text-xs">Trenutna stopa</div>
                                     </div>
                                 </div>
                             </CardContent>
@@ -381,7 +376,7 @@ export default function UserDetailPage() {
                                                 className="text-xs text-muted-foreground">{formatDuration(day.duration)}</div>
                                             {user.hourly_rate && (
                                                 <div
-                                                    className="text-xs text-green-600 font-medium mt-1">{dayEarnings.toFixed(0)}</div>
+                                                    className="text-xs text-green-600 font-medium mt-1">{dayEarnings.toFixed(0)} RSD</div>
                                             )}
                                         </div>
                                     )
@@ -424,7 +419,7 @@ export default function UserDetailPage() {
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2">
                                 <Clock className="h-5 w-5"/>
-                                Nedavne sesije
+                                Sesije
                             </CardTitle>
                         </CardHeader>
                         <CardContent>

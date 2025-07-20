@@ -1,27 +1,30 @@
 "use client"
 
-import {useState, useMemo} from "react"
-import {Suspense} from "react"
-import {useSessions} from "@/app/hooks/useSessions"
-import {getMonthDateRange, getMonthOptions} from "@/lib/helper";
-import {SessionFilters} from "@/app/(dashboard)/history/_components/session-filters";
-import {SessionSummarySkeleton} from "@/app/(dashboard)/history/_components/session-summary-skeleton";
-import {SessionSummary} from "@/app/(dashboard)/history/_components/session-summary";
-import {SessionsListSkeleton} from "@/app/(dashboard)/history/_components/sessions-list-skeleton";
-import {SessionsList} from "@/app/(dashboard)/history/_components/sessions-list";
-import {redirect} from "next/navigation";
-import {useSession} from "next-auth/react";
+import { useState, useMemo } from "react"
+import { Suspense } from "react"
+import { useSessions } from "@/app/hooks/useSessions"
+import { getMonthDateRange, getMonthOptions } from "@/lib/helper"
+import { SessionFilters } from "@/app/(dashboard)/history/_components/session-filters"
+import { SessionSummarySkeleton } from "@/app/(dashboard)/history/_components/session-summary-skeleton"
+import { SessionSummary } from "@/app/(dashboard)/history/_components/session-summary"
+import { SessionsListSkeleton } from "@/app/(dashboard)/history/_components/sessions-list-skeleton"
+import { SessionsList } from "@/app/(dashboard)/history/_components/sessions-list"
+import { redirect } from "next/navigation"
+import { useSession } from "next-auth/react"
 
 export default function WorkSessionTracker() {
-    const session = useSession();
-    if(!session) redirect("/login");
+    const session = useSession()
+    if (!session) redirect("/login")
+
     const [sortBy, setSortBy] = useState<"date" | "duration">("date")
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc")
     const [filterBy, setFilterBy] = useState<"all" | "today" | "week" | "month" | "custom-month">("all")
     const [selectedMonth, setSelectedMonth] = useState<string>(new Date().toISOString().slice(0, 7))
 
-    const {sessions, isLoading} = useSessions()
+    const { sessions, isLoading } = useSessions()
 
+
+    console.log("SESSIONS", sessions)
     const filteredAndSortedSessions = useMemo(() => {
         let filtered = Array.isArray(sessions) ? [...sessions] : []
         const now = new Date()
@@ -40,7 +43,7 @@ export default function WorkSessionTracker() {
                 filtered = filtered.filter((session) => new Date(session.clockIn) >= monthAgo)
                 break
             case "custom-month":
-                const {startDate, endDate} = getMonthDateRange(selectedMonth)
+                const { startDate, endDate } = getMonthDateRange(selectedMonth)
                 filtered = filtered.filter((session) => {
                     const sessionDate = new Date(session.clockIn)
                     return sessionDate >= startDate && sessionDate <= endDate
@@ -53,7 +56,8 @@ export default function WorkSessionTracker() {
             if (sortBy === "date") {
                 comparison = new Date(a.clockIn).getTime() - new Date(b.clockIn).getTime()
             } else if (sortBy === "duration") {
-                comparison = a.duration - b.duration
+                // Updated to use durationMinutes instead of duration
+                comparison = a.durationMinutes - b.durationMinutes
             }
             return sortOrder === "asc" ? comparison : -comparison
         })
@@ -61,8 +65,32 @@ export default function WorkSessionTracker() {
         return filtered
     }, [sessions, sortBy, sortOrder, filterBy, selectedMonth])
 
-    const totalDuration = useMemo(() => {
-        return filteredAndSortedSessions.reduce((total, session) => total + session.duration, 0)
+    // Updated to use durationMinutes and calculate total earnings
+    const sessionStats = useMemo(() => {
+        const totalDuration = filteredAndSortedSessions.reduce((total, session) => total + session.durationMinutes, 0)
+        const totalRegularMinutes = filteredAndSortedSessions.reduce((total, session) => total + session.regularMinutes, 0)
+        const totalOvertimeMinutes = filteredAndSortedSessions.reduce(
+            (total, session) => total + session.overtimeMinutes,
+            0,
+        )
+        const totalEarningsRegular = filteredAndSortedSessions.reduce(
+            (total, session) => total + session.earningsRegular,
+            0,
+        )
+        const totalEarningsOvertime = filteredAndSortedSessions.reduce(
+            (total, session) => total + session.earningsOvertime,
+            0,
+        )
+        const totalEarnings = totalEarningsRegular + totalEarningsOvertime
+
+        return {
+            totalDuration,
+            totalRegularMinutes,
+            totalOvertimeMinutes,
+            totalEarnings,
+            totalEarningsRegular,
+            totalEarningsOvertime,
+        }
     }, [filteredAndSortedSessions])
 
     const getFilterDescription = (): string => {
@@ -89,7 +117,6 @@ export default function WorkSessionTracker() {
                     <h1 className="text-3xl font-bold">Radne Sesije</h1>
                     <p className="text-muted-foreground">Prati svoje vreme rada i zarade</p>
                 </div>
-
                 <SessionFilters
                     filterBy={filterBy}
                     setFilterBy={setFilterBy}
@@ -102,22 +129,27 @@ export default function WorkSessionTracker() {
                 />
             </div>
 
-            <Suspense fallback={<SessionSummarySkeleton/>}>
+            <Suspense fallback={<SessionSummarySkeleton />}>
                 {isLoading ? (
-                    <SessionSummarySkeleton/>
+                    <SessionSummarySkeleton />
                 ) : (
                     <SessionSummary
                         sessions={filteredAndSortedSessions}
-                        totalDuration={totalDuration}
+                        totalDuration={sessionStats.totalDuration}
+                        totalRegularMinutes={sessionStats.totalRegularMinutes}
+                        totalOvertimeMinutes={sessionStats.totalOvertimeMinutes}
+                        totalEarnings={sessionStats.totalEarnings}
+                        totalEarningsRegular={sessionStats.totalEarningsRegular}
+                        totalEarningsOvertime={sessionStats.totalEarningsOvertime}
                         filterDescription={getFilterDescription()}
                         filterBy={filterBy}
-                        rate={sessions?.[0]?.hourly_rate ?? 0}
+                        rate={sessions?.[0]?.hourly_rate ? Number.parseFloat(sessions[0].hourly_rate) : 0}
                     />
                 )}
             </Suspense>
 
-            <Suspense fallback={<SessionsListSkeleton/>}>
-                {isLoading ? <SessionsListSkeleton/> : <SessionsList sessions={filteredAndSortedSessions}/>}
+            <Suspense fallback={<SessionsListSkeleton />}>
+                {isLoading ? <SessionsListSkeleton /> : <SessionsList sessions={filteredAndSortedSessions} />}
             </Suspense>
         </div>
     )

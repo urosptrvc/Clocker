@@ -5,32 +5,30 @@ import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Search } from "lucide-react"
 import { useUsers } from "../hooks/useUsers"
-import {getUserStats, processUserSessions} from "@/lib/data-processing";
-import {ExportControls} from "@/app/admin/_components/export-controls";
-import {SessionsTab} from "@/app/admin/_components/sessions-tab";
-import {AttemptsTab} from "@/app/admin/_components/attempts-tab";
-import {UserCard} from "@/app/admin/_components/user-card";
-import {StatsOverview} from "@/app/admin/_components/stats-overview";
-import {useSession} from "next-auth/react";
-import {redirect} from "next/navigation";
-import {Dialog, DialogContent, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
-import {Button} from "@/components/ui/button";
-import RegisterModal from "@/app/admin/_components/register/RegisterModal";
-import {AdminSkeleton} from "@/app/admin/_components/admin-skeleton";
+import { getUserStats, processUserSessions } from "@/lib/data-processing"
+import { ExportControls } from "@/app/admin/_components/export-controls"
+import { SessionsTab } from "@/app/admin/_components/sessions-tab"
+import { AttemptsTab } from "@/app/admin/_components/attempts-tab"
+import { UserCard } from "@/app/admin/_components/user-card"
+import { StatsOverview } from "@/app/admin/_components/stats-overview"
+import { useSession } from "next-auth/react"
+import { redirect } from "next/navigation"
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Button } from "@/components/ui/button"
+import RegisterModal from "@/app/admin/_components/register/RegisterModal"
+import { AdminSkeleton } from "@/app/admin/_components/admin-skeleton"
 
 export default function Admin() {
     const { users, isLoading } = useUsers()
-    const session =  useSession()
+    const session = useSession()
     const [searchTerm, setSearchTerm] = useState("")
     const [dateRange, setDateRange] = useState({
         from: new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000),
         to: new Date(),
     })
 
-    if(!session) redirect("/login");
-
-    if(session?.data?.user.role !== "admin")
-    {
+    if (!session) redirect("/login")
+    if (session?.data?.user.role !== "admin") {
         redirect("/clocktime")
     }
 
@@ -48,7 +46,14 @@ export default function Admin() {
 
     const overallStats = useMemo(() => {
         const totalSessions = allProcessedSessions.length
-        const totalDuration = allProcessedSessions.reduce((sum, session) => sum + session.duration, 0)
+        // Updated to use durationMinutes instead of duration
+        const totalDuration = allProcessedSessions.reduce((sum, session) => sum + session.durationMinutes, 0)
+        const totalRegularMinutes = allProcessedSessions.reduce((sum, session) => sum + session.regularMinutes, 0)
+        const totalOvertimeMinutes = allProcessedSessions.reduce((sum, session) => sum + session.overtimeMinutes, 0)
+        const totalEarnings = allProcessedSessions.reduce(
+            (sum, session) => sum + session.earningsRegular + session.earningsOvertime,
+            0,
+        )
         const totalAttempts = users.reduce((sum, user) => sum + user.clockAttempts.length, 0)
         const successfulAttempts = users.reduce(
             (sum, user) => sum + user.clockAttempts.filter((attempt) => attempt.success).length,
@@ -59,6 +64,9 @@ export default function Admin() {
             totalUsers: users.length,
             totalSessions,
             totalDuration,
+            totalRegularMinutes,
+            totalOvertimeMinutes,
+            totalEarnings,
             totalAttempts,
             successfulAttempts,
             failedAttempts: totalAttempts - successfulAttempts,
@@ -78,15 +86,14 @@ export default function Admin() {
         <div className="container mx-auto p-6 space-y-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold">Admin Panel</h1>
-                    <p className="text-muted-foreground">Manage users and monitor work sessions</p>
+                    <h1 className="text-3xl font-bold">Admini Panel</h1>
+                    <p className="text-muted-foreground">Upravljajte korisnicima i pratite radne sesije</p>
                 </div>
                 <Dialog>
                     <DialogTrigger asChild>
                         <Button>Dodaj novog korisnika</Button>
                     </DialogTrigger>
-                    <DialogTitle>
-                    </DialogTitle>
+                    <DialogTitle></DialogTitle>
                     <DialogContent className="max-w-2xl overflow-auto max-h-[90vh]">
                         <RegisterModal />
                     </DialogContent>
@@ -98,9 +105,9 @@ export default function Admin() {
 
             <Tabs defaultValue="users" className="space-y-6">
                 <TabsList>
-                    <TabsTrigger value="users">Users Overview</TabsTrigger>
-                    <TabsTrigger value="sessions">All Sessions</TabsTrigger>
-                    <TabsTrigger value="attempts">Clock Attempts</TabsTrigger>
+                    <TabsTrigger value="users">Pregled korisnika</TabsTrigger>
+                    <TabsTrigger value="sessions">Sve sesije</TabsTrigger>
+                    <TabsTrigger value="attempts">Pokušaji prijavljivanja</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="users" className="space-y-4">
@@ -108,17 +115,17 @@ export default function Admin() {
                         <div className="relative flex-1">
                             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                             <Input
-                                placeholder="Search users by name or email..."
+                                placeholder="Pretraži korisnike po imenu ili mejlu..."
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="pl-10"
                             />
                         </div>
                     </div>
-
                     <div className="grid gap-4">
                         {filteredUsers.map((user) => {
                             const stats = getUserStats(user)
+                            console.log("STATS",stats)
                             return <UserCard key={user.id} user={user} stats={stats} onClick={() => handleUserClick(user)} />
                         })}
                     </div>
@@ -134,4 +141,5 @@ export default function Admin() {
             </Tabs>
         </div>
     )
+
 }

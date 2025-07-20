@@ -54,11 +54,13 @@ export async function POST(req: Request) {
         return NextResponse.json({error: "Clock-in nije uspeo"}, {status: 400})
     } else
         isSuccess = true
+
+    const locationPlace = KNOWN_LOCATIONS[location]?.locc==null ? location : KNOWN_LOCATIONS[location]?.locc
     const attempt = await prisma.clockAttempt.create({
         data: {
             userId,
             type: ClockType.OUT,
-            location: KNOWN_LOCATIONS[location]?.locc,
+            location: locationPlace,
             notes: notes,
             success: isSuccess,
             FrontTruckPath: imagePaths.front,
@@ -93,6 +95,28 @@ export async function POST(req: Request) {
             clockOutEventId: attempt.id,
         },
     })
+
+    const clockIn = await prisma.clockAttempt.findUnique({
+        where: { id: openSession.clockInEventId },
+        select: { timestamp: true },
+    })
+
+    const clockOut = attempt.timestamp
+
+    if (clockIn) {
+        const totalMinutes = Math.floor((clockOut.getTime() - clockIn.timestamp.getTime()) / 60000)
+        const regularMinutes = Math.min(600, totalMinutes)
+        const overtimeMinutes = Math.max(0, totalMinutes - 600)
+
+        await prisma.clockSession.update({
+            where: { id: openSession.id },
+            data: {
+                durationMinutes: totalMinutes,
+                regularMinutes,
+                overtimeMinutes,
+            },
+        })
+    }
 
     return NextResponse.json({session: updated}, {status: 200})
 }

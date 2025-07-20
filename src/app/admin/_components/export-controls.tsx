@@ -28,7 +28,7 @@ export function ExportControls({ users, dateRange, onDateRangeChange }) {
                     <div className="flex-1">
                         <div className="flex items-center gap-2 mb-2">
                             <Calendar className="h-4 w-4" />
-                            <span className="text-sm font-medium">Export Period</span>
+                            <span className="text-sm font-medium">Izvozni period</span>
                         </div>
                         <DatePickerWithRange
                             selected={dateRange}
@@ -45,12 +45,12 @@ export function ExportControls({ users, dateRange, onDateRangeChange }) {
                             {isExporting ? (
                                 <>
                                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
-                                    Exporting...
+                                    Izvozi se...
                                 </>
                             ) : (
                                 <>
                                     <FileSpreadsheet className="h-4 w-4" />
-                                    Export All Users
+                                    Izvoz za sve korisnike
                                 </>
                             )}
                         </Button>

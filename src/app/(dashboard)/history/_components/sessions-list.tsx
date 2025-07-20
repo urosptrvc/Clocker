@@ -2,19 +2,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Clock } from "lucide-react"
 import { SessionCard } from "./session-card"
 
-interface Session {
-  id: string
-  clockIn: string
-  clockOut: string
-  duration: number
-  hourly_rate: string
-}
-
-interface SessionsListProps {
-  sessions: Session[]
-}
-
-export function SessionsList({ sessions }: SessionsListProps) {
+export function SessionsList({ sessions }) {
   if (sessions.length === 0) {
     return (
       <Card>

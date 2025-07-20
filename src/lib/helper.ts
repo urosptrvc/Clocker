@@ -7,10 +7,15 @@ export const formatTime = (date: Date | string) => {
     });
 };
 
-export const formatDuration = (seconds: number) => {
-    const hours = Math.floor(seconds / 3600)
-    const minutes = Math.floor((seconds % 3600) / 60)
-    return hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`
+export const formatDuration = (totalMinutes: number) => {
+    const hours = Math.floor(totalMinutes / 60)
+    const minutes = totalMinutes % 60
+
+    if (hours > 0) {
+        return `${hours}h ${minutes}m`
+    } else {
+        return `${minutes}m`
+    }
 }
 
 export const formatSalary = (seconds: number, hourlyRate: any) => {
@@ -41,9 +46,9 @@ export const getMonthDateRange = (monthString: string): { startDate: Date; endDa
 
 export function getSessionDuration(activeSession) {
     if (!activeSession?.clockInEvent?.timestamp) return 0;
-    const startTime = new Date(activeSession.clockInEvent.timestamp) as any;
-    const now = new Date() as any;
-    return Math.floor((now - startTime) / 1000);
+    const startTime = new Date(activeSession.clockInEvent.timestamp).getTime();
+    const now = Date.now();
+    return Math.floor((now - startTime) / 1000 / 60);
 }
 
 export const getMonthOptions = (): Array<{ value: string; label: string }> => {

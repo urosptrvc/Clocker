@@ -106,7 +106,7 @@ export function SessionsTab({ users }) {
                   <div className="flex items-center gap-3">
                     <Badge variant="secondary" className="text-sm font-medium">
                       <Timer className="h-3 w-3 mr-1" />
-                      {formatDuration(session.duration)}
+                      {formatDuration(session.durationMinutes)}
                     </Badge>
                   </div>
                 </div>
