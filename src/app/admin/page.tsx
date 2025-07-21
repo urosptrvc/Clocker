@@ -125,7 +125,6 @@ export default function Admin() {
                     <div className="grid gap-4">
                         {filteredUsers.map((user) => {
                             const stats = getUserStats(user)
-                            console.log("STATS",stats)
                             return <UserCard key={user.id} user={user} stats={stats} onClick={() => handleUserClick(user)} />
                         })}
                     </div>

@@ -8,20 +8,15 @@ export const formatTime = (date: Date | string) => {
 };
 
 export const formatDuration = (totalMinutes: number) => {
-    const hours = Math.floor(totalMinutes / 60)
-    const minutes = totalMinutes % 60
+    const rounded = Math.round(totalMinutes)
+    const hours = Math.floor(rounded / 60)
+    const minutes = rounded % 60
 
     if (hours > 0) {
         return `${hours}h ${minutes}m`
     } else {
         return `${minutes}m`
     }
-}
-
-export const formatSalary = (seconds: number, hourlyRate: any) => {
-    const hours = seconds / 3600
-    const salary = hours * hourlyRate
-    return salary.toFixed(2) + ' RSD'
 }
 
 export const formatDate = (date: Date | string) => {
