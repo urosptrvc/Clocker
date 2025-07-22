@@ -56,19 +56,19 @@ export function ClockOutForm({ load, setLocation, notes, setNotes, onSubmit }) {
                                 setCustomLocation(e.target.value);
                                 setLocation(e.target.value);
                             }}
-                            placeholder="Enter your location"
+                            placeholder="Unesite lokaciju"
                             required
                         />
                     )}
                 </div>
 
                 <div>
-                    <Label htmlFor="notes">Notes</Label>
+                    <Label htmlFor="notes">Napomene</Label>
                     <Input
                         id="notes"
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
-                        placeholder="Add any notes"
+                        placeholder="Dodajte napomene"
                     />
                 </div>
             </div>

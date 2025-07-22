@@ -14,16 +14,15 @@ import {
     Activity,
     MapPin,
     Briefcase,
-    ImageIcon, ArrowLeft, UserIcon, Shield, Download,
+    ImageIcon, ArrowLeft, UserIcon, Shield, Download, Pencil,
 } from "lucide-react"
 import {Drawer, DrawerClose, DrawerContent, DrawerHeader, DrawerTitle} from "@/components/ui/drawer"
 import {useEffect, useState} from "react"
 import {X} from "lucide-react"
 import {Button} from "@/components/ui/button"
-import {useParams} from "next/navigation"
+import {useParams, useRouter} from "next/navigation"
 import {getUserAnalytics} from "@/lib/userAnalytics";
 import {useUsers} from "@/app/hooks/useUsers";
-import router from "next/router"
 import {DatePickerWithRange} from "@/components/ui/date-range-picker";
 import {formatDate, formatDuration, formatTime} from "@/lib/helper";
 import {translateDayToSerbian} from "@/lib/translate";
@@ -36,7 +35,8 @@ type DateRange = {
 }
 export default function AnalyticsDashboard() {
     const params = useParams()
-    const {notifySuccess,notifyError} = useNotifier()
+    const router = useRouter()
+    const {notifySuccess, notifyError} = useNotifier()
     const [Exporting, setExporting] = useState<boolean>(false);
     const [selectedAttempt, setSelectedAttempt] = useState(null)
     const [isAttemptDrawerOpen, setIsAttemptDrawerOpen] = useState(false)
@@ -62,7 +62,6 @@ export default function AnalyticsDashboard() {
         )
     }
     const anals = getUserAnalytics(user, localDateRange)
-    console.log("ANAS",anals)
     const handleAttemptClick = (attempt) => {
         setSelectedAttempt(attempt)
         setIsAttemptDrawerOpen(true)
@@ -116,72 +115,88 @@ export default function AnalyticsDashboard() {
         }
     }
 
+    const handleEdit = () => {
+        router.push(`/admin/${params.id}/edit`)
+    }
+
     return (
         <div className="min-h-screen bg-background p-6">
             <div className="max-w-7xl mx-auto space-y-6">
                 {/* Header Section */}
-                <div className="border-b bg-card">
-                    <div className="container mx-auto px-4 py-6">
-                        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
-                            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                                <Button onClick={handleRedirect} variant="ghost" size="sm" className="mb-2 sm:mb-0 sm:mr-2">
-                                    <ArrowLeft className="h-4 w-4 mr-2"/>
-                                    Nazad
-                                </Button>
-                                <div
-                                    className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                                    <UserIcon className="h-6 w-6 text-primary"/>
-                                </div>
-                                <div className="min-w-0">
-                                    <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                                        <h1 className="text-2xl font-bold truncate">{user.name}</h1>
-                                        <div className="flex flex-wrap gap-2">
-                                            <Badge variant={user.role === "admin" ? "default" : "secondary"}
-                                                   className="w-fit">
-                                                <Shield className="h-3 w-3 mr-1"/>
-                                                {user.role}
-                                            </Badge>
-                                        </div>
+                <Card>
+                    <CardContent>
+                        <div className="container mx-auto px-4 py-6 pt-10">
+                            <div
+                                className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+                                <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                                    <Button onClick={handleRedirect} variant="ghost" size="sm"
+                                            className="mb-2 sm:mb-0 sm:mr-2">
+                                        <ArrowLeft className="h-4 w-4 mr-2"/>
+                                        Nazad
+                                    </Button>
+                                    <div
+                                        className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                                        <UserIcon className="h-6 w-6 text-primary"/>
                                     </div>
-                                    <p className="text-muted-foreground truncate">{user.username}</p>
+                                    <div className="min-w-0">
+                                        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                                            <h1 className="text-2xl font-bold truncate">{user.name}</h1>
+                                            <div className="flex flex-wrap gap-2">
+                                                <Badge variant={user.role === "admin" ? "default" : "secondary"}
+                                                       className="w-fit">
+                                                    <Shield className="h-3 w-3 mr-1"/>
+                                                    {user.role}
+                                                </Badge>
+                                            </div>
+                                        </div>
+                                        <p className="text-muted-foreground truncate">{user.username}</p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
-                                <div className="w-full sm:w-auto">
-                                    <DatePickerWithRange
-                                        className="w-full"
-                                        selected={localDateRange}
-                                        onSelectAction={(range) => {
-                                            if (range?.from && range?.to) {
-                                                setLocalDateRange(range)
-                                            }
-                                        }}
-                                    />
+                                <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+                                    <div className="w-full sm:w-auto">
+                                        <DatePickerWithRange
+                                            className="w-full"
+                                            selected={localDateRange}
+                                            onSelectAction={(range) => {
+                                                if (range?.from && range?.to) {
+                                                    setLocalDateRange(range)
+                                                }
+                                            }}
+                                        />
+                                    </div>
+                                    <Button
+                                        onClick={handleExport}
+                                        disabled={Exporting}
+                                        className="flex items-center gap-2 w-full sm:w-auto"
+                                    >
+                                        {Exporting ? (
+                                            <>
+                                                <div
+                                                    className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
+                                                <span className="hidden sm:inline">Izvozi se...</span>
+                                                <span className="sm:hidden">Izvoz...</span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Download className="h-4 w-4"/>
+                                                <span className="hidden sm:inline">Izvozi podatke korisnika</span>
+                                                <span className="sm:hidden">Izvoz</span>
+                                            </>
+                                        )}
+                                    </Button>
+                                    <Button
+                                        onClick={handleEdit}
+                                        className="flex items-center gap-2 w-full sm:w-auto"
+                                    >
+                                        <Pencil className="h-4 w-4"/>
+                                        <span className="hidden sm:inline">Uredi korisnika</span>
+                                        <span className="sm:hidden">Uredi</span>
+                                    </Button>
                                 </div>
-                                <Button
-                                    onClick={handleExport}
-                                    disabled={Exporting}
-                                    className="flex items-center gap-2 w-full sm:w-auto"
-                                >
-                                    {Exporting ? (
-                                        <>
-                                            <div
-                                                className="animate-spin rounded-full h-4 w-4 border-b-2 border-current"></div>
-                                            <span className="hidden sm:inline">Izvozi se...</span>
-                                            <span className="sm:hidden">Izvoz...</span>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Download className="h-4 w-4"/>
-                                            <span className="hidden sm:inline">Izvozi podatke korisnika</span>
-                                            <span className="sm:hidden">Izvoz</span>
-                                        </>
-                                    )}
-                                </Button>
                             </div>
                         </div>
-                    </div>
-                </div>
+                    </CardContent>
+                </Card>
 
                 {/* Key Metrics */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -202,7 +217,7 @@ export default function AnalyticsDashboard() {
                             <div className="flex items-center justify-between">
                                 <div>
                                     <p className="text-sm font-medium text-muted-foreground">Ukupno vreme</p>
-                                    <p className="text-3xl font-bold">{formatDuration(anals.totalDuration/60)}</p>
+                                    <p className="text-3xl font-bold">{formatDuration(anals.totalDuration / 60)}</p>
                                 </div>
                                 <Clock className="h-8 w-8 text-green-500"/>
                             </div>
@@ -246,7 +261,7 @@ export default function AnalyticsDashboard() {
                         <CardContent>
                             <div className="text-2xl font-bold text-green-600">{Math.round(anals.regularEarnings)} RSD
                             </div>
-                            <p className="text-sm text-muted-foreground">{formatDuration(anals.totalRegular/60)} redovnog
+                            <p className="text-sm text-muted-foreground">{formatDuration(anals.totalRegular / 60)} redovnog
                                 rada</p>
                         </CardContent>
                     </Card>
@@ -262,7 +277,7 @@ export default function AnalyticsDashboard() {
                             <div
                                 className="text-2xl font-bold text-orange-600">{Math.round(anals.overtimeEarnings)} RSD
                             </div>
-                            <p className="text-sm text-muted-foreground">{formatDuration(anals.totalOvertime/60)} prekovremenog
+                            <p className="text-sm text-muted-foreground">{formatDuration(anals.totalOvertime / 60)} prekovremenog
                                 rada</p>
                         </CardContent>
                     </Card>
@@ -289,7 +304,8 @@ export default function AnalyticsDashboard() {
                             <CardTitle>Prosečna sesija</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">{formatDuration(anals.averageSessionDuration/60)}</div>
+                            <div
+                                className="text-2xl font-bold">{formatDuration(anals.averageSessionDuration / 60)}</div>
                         </CardContent>
                     </Card>
 
@@ -298,7 +314,7 @@ export default function AnalyticsDashboard() {
                             <CardTitle>Najduža sesija</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">{formatDuration(anals.longestSession/60)}</div>
+                            <div className="text-2xl font-bold">{formatDuration(anals.longestSession / 60)}</div>
                         </CardContent>
                     </Card>
 
@@ -307,7 +323,7 @@ export default function AnalyticsDashboard() {
                             <CardTitle>Najkraća sesija</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold">{formatDuration(anals.shortestSession/60)}</div>
+                            <div className="text-2xl font-bold">{formatDuration(anals.shortestSession / 60)}</div>
                         </CardContent>
                     </Card>
                 </div>
@@ -322,8 +338,8 @@ export default function AnalyticsDashboard() {
                     </CardHeader>
                     <CardContent>
                         <div className="space-y-4">
-                            {Object.entries(anals.dailyStats).map(([day, stats]:any) => {
-                                const maxDuration = Math.max(...Object.values(anals.dailyStats).map((d:any) => d.duration))
+                            {Object.entries(anals.dailyStats).map(([day, stats]: any) => {
+                                const maxDuration = Math.max(...Object.values(anals.dailyStats).map((d: any) => d.duration))
                                 const percentage = maxDuration > 0 ? (stats.duration / maxDuration) * 100 : 0
 
                                 return (
@@ -339,7 +355,7 @@ export default function AnalyticsDashboard() {
                                             className="text-sm text-muted-foreground w-20 text-right">{stats.sessions} sesija
                                         </div>
                                         <div className="text-sm text-muted-foreground w-24 text-right">
-                                            {formatDuration(stats.duration/60)}
+                                            {formatDuration(stats.duration / 60)}
                                         </div>
                                         <div className="text-sm text-green-600 w-20 text-right font-medium">
                                             {Math.round(stats.earnings)} RSD
@@ -432,7 +448,7 @@ export default function AnalyticsDashboard() {
                                     </div>
                                     <div className="text-xl font-bold text-primary mb-1">{day.sessions}</div>
                                     <div
-                                        className="text-xs text-muted-foreground mb-1">{formatDuration(day.duration/60)}</div>
+                                        className="text-xs text-muted-foreground mb-1">{formatDuration(day.duration / 60)}</div>
                                     <div className="text-xs text-green-600 font-medium">{Math.round(day.earnings)} RSD
                                     </div>
                                     <div className="text-xs text-blue-600 mt-1">{Math.round(day.successRate)}% uspeh
@@ -450,7 +466,8 @@ export default function AnalyticsDashboard() {
                             <CardTitle>Najaktivniji dan</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <div className="text-2xl font-bold text-green-600">{translateDayToSerbian(anals.mostActiveDay)}</div>
+                            <div
+                                className="text-2xl font-bold text-green-600">{translateDayToSerbian(anals.mostActiveDay)}</div>
                         </CardContent>
                     </Card>
 
@@ -639,6 +656,7 @@ export default function AnalyticsDashboard() {
                                                             <div key={index} className="space-y-2">
                                                                 <div
                                                                     className="aspect-square bg-muted rounded-lg overflow-hidden">
+                                                                    {/* eslint-disable-next-line @next/next/no-img-element */}
                                                                     <img
                                                                         src={image.path || "/placeholder.svg"}
                                                                         alt={image.alt || "Nema slike"}

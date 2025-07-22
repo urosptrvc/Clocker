@@ -23,8 +23,6 @@ export default function WorkSessionTracker() {
 
     const { sessions, isLoading } = useSessions()
 
-
-    console.log("SESSIONS", sessions)
     const filteredAndSortedSessions = useMemo(() => {
         let filtered = Array.isArray(sessions) ? [...sessions] : []
         const now = new Date()
@@ -143,7 +141,6 @@ export default function WorkSessionTracker() {
                         totalEarningsOvertime={sessionStats.totalEarningsOvertime}
                         filterDescription={getFilterDescription()}
                         filterBy={filterBy}
-                        rate={sessions?.[0]?.hourly_rate ? Number.parseFloat(sessions[0].hourly_rate) : 0}
                     />
                 )}
             </Suspense>

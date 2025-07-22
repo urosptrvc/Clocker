@@ -1,15 +1,15 @@
 "use client"
 
-import { useState, useEffect } from "react";
-import { useApi } from "@/app/hooks/useApi";
-import { useNotifier } from "@/app/hooks/useNotifications";
+import {useState, useEffect} from "react";
+import {useApi} from "@/app/hooks/useApi";
+import {useNotifier} from "@/app/hooks/useNotifications";
 
 export function useUsers() {
     const [users, setUsers] = useState([]);
     const [user, setUser] = useState<any>();
     const [isLoading, setIsLoading] = useState(true);
-    const { apiGet } = useApi();
-    const { notifyError } = useNotifier();
+    const {apiGet, apiPatch, apiDelete} = useApi();
+    const {notifyError} = useNotifier();
 
     async function fetchUsers() {
         setIsLoading(true);
@@ -43,6 +43,32 @@ export function useUsers() {
         }
     }
 
+    async function deleteUser(id) {
+        setIsLoading(true);
+        try {
+            await apiDelete(`/api/users/${id}`);
+            await fetchUsers();
+        } catch (error) {
+            const errorData = JSON.parse(error.message);
+            notifyError("Greška prilikom brisanja", errorData.error);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    async function updateUser(id, data: any) {
+        try {
+            const result = await apiPatch(`/api/users/${id}`, data);
+            await fetchUser(id);
+            return result;
+        } catch (error) {
+            const errorData = JSON.parse(error.message);
+            notifyError("Greška prilikom ažuriranja", errorData.error);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
     useEffect(() => {
         fetchUsers();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -53,6 +79,8 @@ export function useUsers() {
         fetchUsers,
         isLoading,
         fetchUser,
-        user
+        user,
+        deleteUser,
+        updateUser
     };
 }

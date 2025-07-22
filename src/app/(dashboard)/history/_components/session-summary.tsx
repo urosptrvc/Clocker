@@ -1,5 +1,5 @@
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
-import {Timer, DollarSign, Clock, TrendingUp} from "lucide-react"
+import {Timer, Clock, TrendingUp} from "lucide-react"
 import {formatDuration} from "@/lib/helper"
 
 export function SessionSummary({
@@ -8,7 +8,9 @@ export function SessionSummary({
                                    totalRegularMinutes,
                                    totalOvertimeMinutes,
                                    totalEarnings,
+                                   // eslint-disable-next-line @typescript-eslint/no-unused-vars
                                    totalEarningsRegular,
+                                   // eslint-disable-next-line @typescript-eslint/no-unused-vars
                                    totalEarningsOvertime,
                                    filterDescription,
                                    filterBy,
@@ -32,7 +34,7 @@ export function SessionSummary({
             </CardHeader>
             <CardContent>
                 {/* Main Stats Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 mb-6">
                     <div className="text-center">
                         <div className="text-2xl font-bold text-primary">{sessions.length}</div>
                         <div className="text-sm text-muted-foreground">Ukupno Sesija</div>
@@ -41,16 +43,16 @@ export function SessionSummary({
                         <div className="text-2xl font-bold text-primary">{formatDuration(totalDuration)}</div>
                         <div className="text-sm text-muted-foreground">Ukupno Vremena</div>
                     </div>
-                    <div className="text-center">
-                        <div className="text-2xl font-bold text-green-600">{formatCurrency(totalEarnings)}</div>
-                        <div className="text-sm text-muted-foreground">Ukupna Zarada</div>
-                    </div>
-                    <div className="text-center">
-                        <div className="text-2xl font-bold text-primary">
-                            {sessions.length > 0 ? sessions[0]?.hourly_rate : 0} RSD
-                        </div>
-                        <div className="text-sm text-muted-foreground">Satnica</div>
-                    </div>
+                    {/*<div className="text-center">*/}
+                    {/*    <div className="text-2xl font-bold text-green-600">{formatCurrency(totalEarnings)}</div>*/}
+                    {/*    <div className="text-sm text-muted-foreground">Ukupna Zarada</div>*/}
+                    {/*</div>*/}
+                    {/*<div className="text-center">*/}
+                    {/*    <div className="text-2xl font-bold text-primary">*/}
+                    {/*        {sessions.length > 0 ? sessions[0]?.hourly_rate : 0} RSD*/}
+                    {/*    </div>*/}
+                    {/*    <div className="text-sm text-muted-foreground">Satnica</div>*/}
+                    {/*</div>*/}
                 </div>
 
                 {/* Time Breakdown */}
@@ -71,24 +73,24 @@ export function SessionSummary({
                     </div>
                 </div>
 
-                {/* Earnings Breakdown */}
-                <div className="border-t pt-4">
-                    <h4 className="text-sm font-semibold text-muted-foreground mb-3 flex items-center gap-2">
-                        <DollarSign className="h-4 w-4"/>
-                        Raspored Zarade
-                    </h4>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div className="text-center p-3  rounded-lg">
-                            <div className="text-xl font-bold text-primary">{formatCurrency(totalEarningsRegular)}</div>
-                            <div className="text-sm text-muted-foreground">Regularna Zarada</div>
-                        </div>
-                        <div className="text-center p-3  rounded-lg">
-                            <div
-                                className="text-xl font-bold text-orange-500">{formatCurrency(totalEarningsOvertime)}</div>
-                            <div className="text-sm text-muted-foreground">Prekovremena Zarada</div>
-                        </div>
-                    </div>
-                </div>
+                {/*/!* Earnings Breakdown *!/*/}
+                {/*<div className="border-t pt-4">*/}
+                {/*    <h4 className="text-sm font-semibold text-muted-foreground mb-3 flex items-center gap-2">*/}
+                {/*        <DollarSign className="h-4 w-4"/>*/}
+                {/*        Raspored Zarade*/}
+                {/*    </h4>*/}
+                {/*    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">*/}
+                {/*        <div className="text-center p-3  rounded-lg">*/}
+                {/*            <div className="text-xl font-bold text-primary">{formatCurrency(totalEarningsRegular)}</div>*/}
+                {/*            <div className="text-sm text-muted-foreground">Regularna Zarada</div>*/}
+                {/*        </div>*/}
+                {/*        <div className="text-center p-3  rounded-lg">*/}
+                {/*            <div*/}
+                {/*                className="text-xl font-bold text-orange-500">{formatCurrency(totalEarningsOvertime)}</div>*/}
+                {/*            <div className="text-sm text-muted-foreground">Prekovremena Zarada</div>*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+                {/*</div>*/}
 
                 {/* Monthly Summary for custom-month filter */}
                 {filterBy === "custom-month" && totalDuration > 0 && (

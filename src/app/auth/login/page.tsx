@@ -38,7 +38,7 @@ const LoginPage = () => {
 
     return (
         <AuthCard
-            title="Energo Solutions Clocker"
+            title="VS Energy Clocker"
         >
             <LoadSpinner isLoading={isLoading}>
                 <AuthForm

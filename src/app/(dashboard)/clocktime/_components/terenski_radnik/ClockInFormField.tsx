@@ -151,9 +151,9 @@ export function ClockInFormField({
                     )}
                 </div>
                 <div>
-                    <Label htmlFor="notes">Opis</Label>
+                    <Label htmlFor="notes">Napomene</Label>
                     <Input id="notes" value={notes} onChange={(e) => setNotes(e.target.value)}
-                           placeholder="Unesite opis"/>
+                           placeholder="Dodajte napomene"/>
                 </div>
             </div>
 

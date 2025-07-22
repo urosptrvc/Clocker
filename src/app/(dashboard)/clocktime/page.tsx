@@ -17,6 +17,7 @@ export default function ClockTime() {
     if (!session) redirect("/auth/login");
 
     const userRole = session?.data?.user?.role;
+    const userName = session?.data?.user?.name;
     const { isLoading, clocked, activeSession, fetchClockedState } = useClockingState();
     const clockActions = useClockActions(fetchClockedState);
 
@@ -25,7 +26,7 @@ export default function ClockTime() {
             <div className="mb-6 flex justify-between items-center">
                 <div>
                     <h1 className="text-3xl font-bold mb-2">Clock Time</h1>
-                    <p className="text-muted-foreground">Prati svoje vreme na poslu</p>
+                    <p className="text-muted-foreground">Dobar dan, {userName}</p>
                 </div>
                 <Link href="/history">
                     <Button variant="outline" className="flex items-center gap-2">

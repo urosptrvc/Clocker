@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server"
+import {NextResponse} from "next/server"
 import {prisma} from "@/lib/prisma";
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/lib/auth";
@@ -6,7 +6,7 @@ import {authOptions} from "@/lib/auth";
 export async function GET() {
     const session = await getServerSession(authOptions)
     if (session?.user.role !== "admin") {
-        return NextResponse.json({ error: "Nemate privilegiju" }, { status: 401 })
+        return NextResponse.json({error: "Nemate privilegiju"}, {status: 401})
     }
     try {
         const users = await prisma.user.findMany({
@@ -14,11 +14,14 @@ export async function GET() {
                 clockAttempts: true,
                 clockSessions: true,
             },
+            where: {
+                isActive: "1"
+            }
         })
 
         return NextResponse.json(users)
     } catch (error) {
         console.error("Greška prilikom dohvatanja korisnika:", error)
-        return new NextResponse("Greška na serveru", { status: 500 })
+        return new NextResponse("Greška na serveru", {status: 500})
     }
 }

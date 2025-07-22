@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE `users` ADD COLUMN `isActive` VARCHAR(191) NULL DEFAULT '1';

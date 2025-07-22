@@ -73,6 +73,21 @@ export function useApi(baseUrl: string = "") {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
+    const apiPatch = useCallback(async (url: string, body?: any, options?: RequestOptions) => {
+        const res = await fetch(buildUrl(url, options?.params), {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                ...(options?.headers || {}),
+            },
+            body: JSON.stringify(body),
+        })
+
+        if (!res.ok) throw new Error(await res.text())
+        return res.json()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
     const apiDelete = useCallback(async (url: string, options?: RequestOptions) => {
         const res = await fetch(buildUrl(url, options?.params), {
             method: "DELETE",
@@ -92,5 +107,6 @@ export function useApi(baseUrl: string = "") {
         apiPost,
         apiPut,
         apiDelete,
+        apiPatch
     }
 }

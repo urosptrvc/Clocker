@@ -7,8 +7,8 @@ import Providers from "@/app/providers";
 
 
 export const metadata: Metadata = {
-    title: "Energo Clocker",
-    description: "Energo Solutions Work Clocker",
+    title: "VS Energy Clocker",
+    description: "VS Energy Clocker",
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {

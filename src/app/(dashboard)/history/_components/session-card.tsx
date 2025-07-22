@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Clock, Calendar, Timer, CircleDollarSign, MapPin, FileText, Zap } from "lucide-react"
+import { Clock, Calendar, Timer, MapPin, FileText, Zap } from "lucide-react"
 import { formatDate, formatDuration, formatTime } from "@/lib/helper"
 
 interface SessionCardProps {
@@ -26,17 +26,17 @@ export function SessionCard({ session }: SessionCardProps) {
   const formattedClockIn = session.clockIn ? formatTime(session.clockIn) : null
   const formattedClockOut = session.clockOut ? formatTime(session.clockOut) : null
 
-  const totalEarnings = session.earningsRegular + session.earningsOvertime
+  // const totalEarnings = session.earningsRegular + session.earningsOvertime
   const hasOvertime = session.overtimeMinutes > 0
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("sr-RS", {
-      style: "currency",
-      currency: "RSD",
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount)
-  }
+  // const formatCurrency = (amount: number) => {
+  //   return new Intl.NumberFormat("sr-RS", {
+  //     style: "currency",
+  //     currency: "RSD",
+  //     minimumFractionDigits: 0,
+  //     maximumFractionDigits: 0,
+  //   }).format(amount)
+  // }
 
   const duration = typeof session.durationMinutes === "number" ? formatDuration(session.durationMinutes) : null
 
@@ -65,10 +65,10 @@ export function SessionCard({ session }: SessionCardProps) {
 
               {/* Main badges */}
               <div className="flex items-center gap-3">
-                <Badge variant="secondary" className="text-sm font-medium">
-                  <CircleDollarSign className="h-3 w-3 mr-1" />
-                  {formatCurrency(totalEarnings)}
-                </Badge>
+                {/*<Badge variant="secondary" className="text-sm font-medium">*/}
+                {/*  <CircleDollarSign className="h-3 w-3 mr-1" />*/}
+                {/*  {formatCurrency(totalEarnings)}*/}
+                {/*</Badge>*/}
                 <Badge variant="secondary" className="text-sm font-medium">
                   <Timer className="h-3 w-3 mr-1" />
                   {duration ?? "U procesu"}
@@ -90,19 +90,19 @@ export function SessionCard({ session }: SessionCardProps) {
               )}
             </div>
 
-            {/* Earnings breakdown */}
-            <div className="flex flex-wrap gap-2">
-              <Badge variant="outline" className="text-xs">
-                <CircleDollarSign className="h-3 w-3 mr-1 text-green-500" />
-                Regularna zarada: {formatCurrency(session.earningsRegular)}
-              </Badge>
-              {session.earningsOvertime > 0 && (
-                  <Badge variant="outline" className="text-xs">
-                    <CircleDollarSign className="h-3 w-3 mr-1 text-purple-500" />
-                    Prekovremena zarada: {formatCurrency(session.earningsOvertime)}
-                  </Badge>
-              )}
-            </div>
+            {/*/!* Earnings breakdown *!/*/}
+            {/*<div className="flex flex-wrap gap-2">*/}
+            {/*  <Badge variant="outline" className="text-xs">*/}
+            {/*    <CircleDollarSign className="h-3 w-3 mr-1 text-green-500" />*/}
+            {/*    Regularna zarada: {formatCurrency(session.earningsRegular)}*/}
+            {/*  </Badge>*/}
+            {/*  {session.earningsOvertime > 0 && (*/}
+            {/*      <Badge variant="outline" className="text-xs">*/}
+            {/*        <CircleDollarSign className="h-3 w-3 mr-1 text-purple-500" />*/}
+            {/*        Prekovremena zarada: {formatCurrency(session.earningsOvertime)}*/}
+            {/*      </Badge>*/}
+            {/*  )}*/}
+            {/*</div>*/}
 
             {/* Location and notes */}
             {(session.locationIn || session.locationOut || session.notesIn || session.notesOut) && (

@@ -108,9 +108,9 @@ const Navbar = () => {
                     <div className="flex justify-center items-center flex-1 md:flex-1">
                         <Link href="/clocktime">
                             <div className="flex flex-col items-center hover:opacity-90 transition-opacity">
-                                <Image src="/logo.png" alt="Logo" width={50} height={50} />
-                                <h1 className="text-xs sm:text-sm md:text-base lg:text-lg font-bold mt-1 md:mt-2 text-center leading-tight">
-                                    Energo Solutions Clocker
+                                <Image src="/logo.png" alt="Logo" width={100} height={50} />
+                                <h1 className="text-xs sm:text-sm md:text-base lg:text-lg font-bold md:mt-2 text-center leading-tight">
+                                    VS Energy Clocker
                                 </h1>
                             </div>
                         </Link>
