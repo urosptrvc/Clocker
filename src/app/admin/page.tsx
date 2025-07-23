@@ -3,7 +3,8 @@
 import { useState, useMemo } from "react"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Search } from "lucide-react"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Search, Filter } from "lucide-react"
 import { useUsers } from "../hooks/useUsers"
 import { getUserStats, processUserSessions } from "@/lib/data-processing"
 import { ExportControls } from "@/app/admin/_components/export-controls"
@@ -17,11 +18,13 @@ import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/
 import { Button } from "@/components/ui/button"
 import RegisterModal from "@/app/admin/_components/register/RegisterModal"
 import { AdminSkeleton } from "@/app/admin/_components/admin-skeleton"
+import { getUserAnalytics } from "@/lib/userAnalytics"
 
 export default function Admin() {
     const { users, isLoading } = useUsers()
     const session = useSession()
     const [searchTerm, setSearchTerm] = useState("")
+    const [roleFilter, setRoleFilter] = useState("all")
     const [dateRange, setDateRange] = useState({
         from: new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000),
         to: new Date(),
@@ -33,12 +36,16 @@ export default function Admin() {
     }
 
     const filteredUsers = useMemo(() => {
-        return users.filter(
-            (user) =>
+        return users.filter((user) => {
+            const matchesSearch =
                 user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                user.username.toLowerCase().includes(searchTerm.toLowerCase()),
-        )
-    }, [users, searchTerm])
+                user.username.toLowerCase().includes(searchTerm.toLowerCase())
+
+            const matchesRole = roleFilter === "all" || user.role === roleFilter
+
+            return matchesSearch && matchesRole
+        })
+    }, [users, searchTerm, roleFilter])
 
     const allProcessedSessions = useMemo(() => {
         return users.flatMap((user) => processUserSessions(user))
@@ -46,37 +53,33 @@ export default function Admin() {
 
     const overallStats = useMemo(() => {
         const totalSessions = allProcessedSessions.length
-        // Updated to use durationMinutes instead of duration
-        const totalDuration = allProcessedSessions.reduce((sum, session) => sum + session.durationMinutes, 0)
-        const totalRegularMinutes = allProcessedSessions.reduce((sum, session) => sum + session.regularMinutes, 0)
-        const totalOvertimeMinutes = allProcessedSessions.reduce((sum, session) => sum + session.overtimeMinutes, 0)
-        const totalEarnings = allProcessedSessions.reduce(
-            (sum, session) => sum + session.earningsRegular + session.earningsOvertime,
-            0,
-        )
         const totalAttempts = users.reduce((sum, user) => sum + user.clockAttempts.length, 0)
         const successfulAttempts = users.reduce(
             (sum, user) => sum + user.clockAttempts.filter((attempt) => attempt.success).length,
             0,
         )
-
         return {
             totalUsers: users.length,
             totalSessions,
-            totalDuration,
-            totalRegularMinutes,
-            totalOvertimeMinutes,
-            totalEarnings,
             totalAttempts,
             successfulAttempts,
-            failedAttempts: totalAttempts - successfulAttempts,
-            averageSession: totalSessions > 0 ? totalDuration / totalSessions : 0,
         }
     }, [users, allProcessedSessions])
 
     const handleUserClick = (user) => {
         redirect(`/admin/${user.id}`)
     }
+
+    const analsUsers = users.map((user) => getUserAnalytics(user, dateRange))
+
+    const roleStats = useMemo(() => {
+        const stats = {
+            admin: users.filter((user) => user.role === "admin").length,
+            teren: users.filter((user) => user.role === "teren").length,
+            kancelarija: users.filter((user) => user.role === "kancelarija").length,
+        }
+        return stats
+    }, [users])
 
     if (isLoading) {
         return <AdminSkeleton />
@@ -98,10 +101,47 @@ export default function Admin() {
                         <RegisterModal />
                     </DialogContent>
                 </Dialog>
-                <ExportControls users={users} dateRange={dateRange} onDateRangeChange={setDateRange} />
+                <ExportControls users={users} analsUsers={analsUsers} dateRange={dateRange} onDateRangeChange={setDateRange} />
             </div>
 
             <StatsOverview stats={overallStats} />
+
+            {/* Role Statistics */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-card rounded-lg border p-4">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm font-medium text-muted-foreground">Admin</p>
+                            <p className="text-2xl font-bold">{roleStats.admin}</p>
+                        </div>
+                        <div className="h-8 w-8 bg-blue-100 rounded-full flex items-center justify-center">
+                            <div className="h-4 w-4 bg-blue-600 rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                <div className="bg-card rounded-lg border p-4">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm font-medium text-muted-foreground">Teren</p>
+                            <p className="text-2xl font-bold">{roleStats.teren}</p>
+                        </div>
+                        <div className="h-8 w-8 bg-green-100 rounded-full flex items-center justify-center">
+                            <div className="h-4 w-4 bg-green-600 rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+                <div className="bg-card rounded-lg border p-4">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <p className="text-sm font-medium text-muted-foreground">Kancelarija</p>
+                            <p className="text-2xl font-bold">{roleStats.kancelarija}</p>
+                        </div>
+                        <div className="h-8 w-8 bg-purple-100 rounded-full flex items-center justify-center">
+                            <div className="h-4 w-4 bg-purple-600 rounded-full"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <Tabs defaultValue="users" className="space-y-6">
                 <TabsList>
@@ -121,12 +161,54 @@ export default function Admin() {
                                 className="pl-10"
                             />
                         </div>
+                        <div className="relative min-w-[200px]">
+                            <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+                            <Select value={roleFilter} onValueChange={setRoleFilter}>
+                                <SelectTrigger className="pl-10">
+                                    <SelectValue placeholder="Filtriraj po ulozi" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="all">Sve uloge</SelectItem>
+                                    <SelectItem value="admin">Admin ({roleStats.admin})</SelectItem>
+                                    <SelectItem value="teren">Teren ({roleStats.teren})</SelectItem>
+                                    <SelectItem value="kancelarija">Kancelarija ({roleStats.kancelarija})</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
                     </div>
+
+                    {/* Filter Summary */}
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <span>
+              Prikazano {filteredUsers.length} od {users.length} korisnika
+            </span>
+                        {roleFilter !== "all" && <span className="bg-secondary px-2 py-1 rounded-md">Uloga: {roleFilter}</span>}
+                        {searchTerm && <span className="bg-secondary px-2 py-1 rounded-md">Pretraga: &#34;{searchTerm}&#34;</span>}
+                    </div>
+
                     <div className="grid gap-4">
-                        {filteredUsers.map((user) => {
-                            const stats = getUserStats(user)
-                            return <UserCard key={user.id} user={user} stats={stats} onClick={() => handleUserClick(user)} />
-                        })}
+                        {filteredUsers.length > 0 ? (
+                            filteredUsers.map((user) => {
+                                const stats = getUserStats(user)
+                                return <UserCard key={user.id} user={user} stats={stats} onClick={() => handleUserClick(user)} />
+                            })
+                        ) : (
+                            <div className="text-center py-8 text-muted-foreground">
+                                <p>Nema korisnika koji odgovaraju filterima.</p>
+                                {(searchTerm || roleFilter !== "all") && (
+                                    <Button
+                                        variant="outline"
+                                        className="mt-2 bg-transparent"
+                                        onClick={() => {
+                                            setSearchTerm("")
+                                            setRoleFilter("all")
+                                        }}
+                                    >
+                                        Obriši filtere
+                                    </Button>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </TabsContent>
 
@@ -140,5 +222,4 @@ export default function Admin() {
             </Tabs>
         </div>
     )
-
 }
