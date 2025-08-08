@@ -14,11 +14,7 @@ const LoginPage = () => {
     const [isLoading, setIsLoading] = useState(false);
     const { notifyError, notifySuccess } = useNotifier();
     const router = useRouter();
-    const session = useSession()
 
-    if(session){
-        router.push("/clocktime")
-    }
     const handleLogin = async (e: FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
@@ -34,10 +30,10 @@ const LoginPage = () => {
             notifyError("Error", result.error);
         } else {
             notifySuccess("Success", "Uspesna prijava");
-            router.push("/clocktime");
             setIsLoading(false);
         }
         setIsLoading(false);
+        router.push("/clocktime");
 
     };
 
