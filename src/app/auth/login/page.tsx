@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import {signIn, useSession} from "next-auth/react";
+import {signIn} from "next-auth/react";
 import AuthCard from "@/components/auth/AuthCard";
 import AuthForm from "@/components/auth/AuthForm";
 import { useNotifier } from "@/app/hooks/useNotifications";
