@@ -5,7 +5,7 @@ export async function middleware(req: NextRequest) {
     const protectedRoutes = [
         "/clocktime",
         "/history",
-        "/api/:path*",
+        // "/api/:path*"  <-- ovo sklanjamo
     ];
 
     const session = await getToken({
@@ -15,14 +15,16 @@ export async function middleware(req: NextRequest) {
 
     const { pathname } = req.nextUrl;
 
-    if (pathname === "/auth/login" && session){
+    // Ako je korisnik već ulogovan i ide na login
+    if (pathname === "/auth/login" && session) {
         return NextResponse.redirect(new URL("/clocktime", req.url));
     }
 
+    // Provera samo za rute koje zahtevaju login
     if (
         protectedRoutes.some(route => pathname.startsWith(route)) ||
-        pathname.match(/^\/clocktime\/\w+/) ||
-        pathname.match(/^\/api\/clock\/\w+/)
+        pathname.match(/^\/clocktime\/\w+/)
+        // pathname.match(/^\/api\/clock\/\w+/) <-- ovo sklanjamo
     ) {
         if (!session) {
             return NextResponse.redirect(new URL("/auth/login", req.url));
@@ -36,6 +38,6 @@ export const config = {
     matcher: [
         "/clocktime/:path*",
         "/history/:path*",
-        "/api/:path*",
+        // "/api/:path*" <-- više ne stavljamo API ovde
     ],
 };

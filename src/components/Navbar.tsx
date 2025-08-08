@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { signOut, useSession } from "next-auth/react"
 import { useNotifier } from "@/app/hooks/useNotifications"
-import { redirect, usePathname } from "next/navigation"
+import {usePathname, useRouter} from "next/navigation"
 import Image from "next/image"
 import PopUp from "./PopUp"
 import { ThemeSwitcherBtn } from "@/components/ThemeSwitcherBtn"
@@ -16,12 +16,13 @@ import { Menu } from "lucide-react"
 const Navbar = () => {
     const { notifySuccess, notifyError } = useNotifier()
     const pathname = usePathname()
+    const router = useRouter()
     const [isModalOpen, setModalOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
     const session = useSession()
 
-    if (!session) redirect("/login")
+    if (!session) router.push("/login")
 
     const hiddenRoutes = ["/auth/login", "/auth/register"]
     if (hiddenRoutes.includes(pathname)) {
@@ -75,8 +76,8 @@ const Navbar = () => {
 
                                     {/* Admin Panel Link in Mobile */}
                                     {session?.data?.user?.role === "admin" && (
-                                        <Link href="/admin" onClick={() => setIsMobileMenuOpen(false)}>
-                                            <Button variant="outline" className="w-full justify-start bg-transparent">
+                                        <Link href="/admin">
+                                            <Button variant="outline" className="w-full justify-start bg-transparent" onClick={() => setIsMobileMenuOpen(false)}>
                                                 Admin Panel
                                             </Button>
                                         </Link>

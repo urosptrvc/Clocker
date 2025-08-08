@@ -13,7 +13,7 @@ import { AttemptsTab } from "@/app/admin/_components/attempts-tab"
 import { UserCard } from "@/app/admin/_components/user-card"
 import { StatsOverview } from "@/app/admin/_components/stats-overview"
 import { useSession } from "next-auth/react"
-import { redirect } from "next/navigation"
+import {useRouter} from "next/navigation"
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import RegisterModal from "@/app/admin/_components/register/RegisterModal"
@@ -22,6 +22,7 @@ import { getUserAnalytics } from "@/lib/userAnalytics"
 
 export default function Admin() {
     const { users, isLoading } = useUsers()
+    const router = useRouter()
     const session = useSession()
     const [searchTerm, setSearchTerm] = useState("")
     const [roleFilter, setRoleFilter] = useState("all")
@@ -30,9 +31,8 @@ export default function Admin() {
         to: new Date(),
     })
 
-    if (!session) redirect("/login")
-    if (session?.data?.user.role !== "admin") {
-        redirect("/clocktime")
+    if (session?.data?.user?.role !== "admin") {
+        router.push("/clocktime")
     }
 
     const filteredUsers = useMemo(() => {
@@ -67,7 +67,7 @@ export default function Admin() {
     }, [users, allProcessedSessions])
 
     const handleUserClick = (user) => {
-        redirect(`/admin/${user.id}`)
+        router.push(`/admin/${user.id}`)
     }
 
     const analsUsers = users.map((user) => getUserAnalytics(user, dateRange))
