@@ -1,7 +1,6 @@
 "use client"
 
 import { useSession } from "next-auth/react";
-import { redirect } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { History } from "lucide-react";
 import Link from "next/link";
@@ -11,10 +10,12 @@ import { CurrentTimeCard } from "@/app/(dashboard)/clocktime/_components/Current
 import { WorkSessionCard } from "@/app/(dashboard)/clocktime/_components/WorkSessionCard";
 import { Skeleton } from "@/components/ui/skeleton";
 import { WorkSessionCardField } from "@/app/(dashboard)/clocktime/_components/terenski_radnik/WorkSessionCardField";
+import {useRouter} from "next/navigation";
 
 export default function ClockTime() {
     const session = useSession();
-    if (!session) redirect("/auth/login");
+    const router = useRouter();
+    if (!session) router.push("/auth/login");
 
     const userRole = session?.data?.user?.role;
     const userName = session?.data?.user?.name;

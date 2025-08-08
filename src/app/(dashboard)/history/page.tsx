@@ -9,12 +9,13 @@ import { SessionSummarySkeleton } from "@/app/(dashboard)/history/_components/se
 import { SessionSummary } from "@/app/(dashboard)/history/_components/session-summary"
 import { SessionsListSkeleton } from "@/app/(dashboard)/history/_components/sessions-list-skeleton"
 import { SessionsList } from "@/app/(dashboard)/history/_components/sessions-list"
-import { redirect } from "next/navigation"
 import { useSession } from "next-auth/react"
+import {useRouter} from "next/navigation";
 
 export default function WorkSessionTracker() {
     const session = useSession()
-    if (!session) redirect("/login")
+    const router = useRouter()
+    if (!session) router.push("/login")
 
     const [sortBy, setSortBy] = useState<"date" | "duration">("date")
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc")

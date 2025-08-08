@@ -5,7 +5,7 @@ import {signIn, useSession} from "next-auth/react";
 import AuthCard from "@/components/auth/AuthCard";
 import AuthForm from "@/components/auth/AuthForm";
 import { useNotifier } from "@/app/hooks/useNotifications";
-import {redirect, useRouter} from "next/navigation";
+import {useRouter} from "next/navigation";
 import LoadSpinner from "@/components/LoadSpinner";
 
 const LoginPage = () => {
@@ -34,7 +34,7 @@ const LoginPage = () => {
             notifyError("Error", result.error);
         } else {
             notifySuccess("Success", "Uspesna prijava");
-            redirect("/clocktime");
+            router.push("/clocktime");
             setIsLoading(false);
         }
         setIsLoading(false);
