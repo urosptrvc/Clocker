@@ -1,11 +1,11 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { signIn } from "next-auth/react";
+import {signIn, useSession} from "next-auth/react";
 import AuthCard from "@/components/auth/AuthCard";
 import AuthForm from "@/components/auth/AuthForm";
 import { useNotifier } from "@/app/hooks/useNotifications";
-import {redirect} from "next/navigation";
+import {redirect, useRouter} from "next/navigation";
 import LoadSpinner from "@/components/LoadSpinner";
 
 const LoginPage = () => {
@@ -13,7 +13,12 @@ const LoginPage = () => {
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const { notifyError, notifySuccess } = useNotifier();
+    const router = useRouter();
+    const session = useSession()
 
+    if(session){
+        router.push("/clocktime")
+    }
     const handleLogin = async (e: FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
