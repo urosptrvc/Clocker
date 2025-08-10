@@ -1,6 +1,6 @@
 "use client"
 
-import { useSession } from "next-auth/react";
+import {useSession} from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { History } from "lucide-react";
 import Link from "next/link";
@@ -15,7 +15,7 @@ import {useRouter} from "next/navigation";
 export default function ClockTime() {
     const session = useSession();
     const router = useRouter();
-    if (!session) router.push("/auth/login");
+    if (!session?.data?.user) router.push("/auth/login");
 
     const userRole = session?.data?.user?.role;
     const userName = session?.data?.user?.name;
