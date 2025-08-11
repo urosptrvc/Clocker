@@ -1,12 +1,14 @@
 import {NextResponse} from "next/server"
 import {prisma} from "@/lib/prisma";
-import {getServerSession} from "next-auth";
-import {authOptions} from "@/lib/auth";
+import {ValidateApiToken} from "@/lib/validateApiToken";
 
 export async function GET() {
-    const session = await getServerSession(authOptions)
-    if (session?.user.role !== "admin") {
-        return NextResponse.json({error: "Nemate privilegiju"}, {status: 401})
+    const userSession = await ValidateApiToken()
+    if(userSession.role !== "admin"){
+        return NextResponse.json(
+            { error: "Nemate pristup" },
+            { status: 403 }
+        )
     }
     try {
         const users = await prisma.user.findMany({

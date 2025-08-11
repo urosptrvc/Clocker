@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react" // Added useEffect
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -12,16 +12,19 @@ import { SessionsTab } from "@/app/admin/_components/sessions-tab"
 import { AttemptsTab } from "@/app/admin/_components/attempts-tab"
 import { UserCard } from "@/app/admin/_components/user-card"
 import { StatsOverview } from "@/app/admin/_components/stats-overview"
-import {useRouter} from "next/navigation"
+import { useRouter } from "next/navigation"
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import RegisterModal from "@/app/admin/_components/register/RegisterModal"
 import { AdminSkeleton } from "@/app/admin/_components/admin-skeleton"
 import { getUserAnalytics } from "@/lib/userAnalytics"
+import { useUserContext } from "@/context/UserContext"
 
 export default function Admin() {
-    const { users, isLoading } = useUsers()
+    const { user: authUser, loading } = useUserContext()
     const router = useRouter()
+    const { users, isLoading } = useUsers()
+    console.log("USERS", users)
     const [searchTerm, setSearchTerm] = useState("")
     const [roleFilter, setRoleFilter] = useState("all")
     const [dateRange, setDateRange] = useState({
@@ -29,28 +32,32 @@ export default function Admin() {
         to: new Date(),
     })
 
+    useEffect(() => {
+        if (!authUser && !loading) {
+            router.push("/auth/login")
+        }
+    }, [authUser, loading, router])
+
     const filteredUsers = useMemo(() => {
-        return users.filter((user) => {
+        return users.filter((managedUser) => {
             const matchesSearch =
-                user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                user.username.toLowerCase().includes(searchTerm.toLowerCase())
-
-            const matchesRole = roleFilter === "all" || user.role === roleFilter
-
+                managedUser.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                managedUser.username.toLowerCase().includes(searchTerm.toLowerCase())
+            const matchesRole = roleFilter === "all" || managedUser.role === roleFilter
             return matchesSearch && matchesRole
         })
     }, [users, searchTerm, roleFilter])
 
     const allProcessedSessions = useMemo(() => {
-        return users.flatMap((user) => processUserSessions(user))
+        return users.flatMap((managedUser) => processUserSessions(managedUser))
     }, [users])
 
     const overallStats = useMemo(() => {
         const totalSessions = allProcessedSessions.length
-        const totalAttempts = users.reduce((sum, user) => sum + user.clockAttempts.length, 0)
+        const totalAttempts = users.reduce((sum, managedUser) => sum + managedUser.clockAttempts.length, 0)
         const successfulAttempts = users.reduce(
-            (sum, user) => sum + user.clockAttempts.filter((attempt) => attempt.success).length,
-            0,
+            (sum, managedUser) => sum + managedUser.clockAttempts.filter((attempt) => attempt.success).length,
+            0
         )
         return {
             totalUsers: users.length,
@@ -60,22 +67,21 @@ export default function Admin() {
         }
     }, [users, allProcessedSessions])
 
-    const handleUserClick = (user) => {
-        router.push(`/admin/${user.id}`)
+    const handleUserClick = (managedUser) => {
+        router.push(`/admin/${managedUser.id}`)
     }
 
-    const analsUsers = users.map((user) => getUserAnalytics(user, dateRange))
+    const analyticsUsers = users.map((managedUser) => getUserAnalytics(managedUser, dateRange)) // Fixed typo: analsUsers -> analyticsUsers
 
     const roleStats = useMemo(() => {
-        const stats = {
-            admin: users.filter((user) => user.role === "admin").length,
-            teren: users.filter((user) => user.role === "teren").length,
-            kancelarija: users.filter((user) => user.role === "kancelarija").length,
+        return {
+            admin: users.filter((managedUser) => managedUser.role === "admin").length,
+            teren: users.filter((managedUser) => managedUser.role === "teren").length,
+            kancelarija: users.filter((managedUser) => managedUser.role === "kancelarija").length,
         }
-        return stats
     }, [users])
 
-    if (isLoading) {
+    if (isLoading || loading) {
         return <AdminSkeleton />
     }
 
@@ -83,7 +89,7 @@ export default function Admin() {
         <div className="container mx-auto p-6 space-y-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold">Admini Panel</h1>
+                    <h1 className="text-3xl font-bold">Admin Panel</h1>
                     <p className="text-muted-foreground">Upravljajte korisnicima i pratite radne sesije</p>
                 </div>
                 <Dialog>
@@ -95,7 +101,7 @@ export default function Admin() {
                         <RegisterModal />
                     </DialogContent>
                 </Dialog>
-                <ExportControls users={users} analsUsers={analsUsers} dateRange={dateRange} onDateRangeChange={setDateRange} />
+                <ExportControls users={users} analsUsers={analyticsUsers} dateRange={dateRange} onDateRangeChange={setDateRange} />
             </div>
 
             <StatsOverview stats={overallStats} />
@@ -182,9 +188,16 @@ export default function Admin() {
 
                     <div className="grid gap-4">
                         {filteredUsers.length > 0 ? (
-                            filteredUsers.map((user) => {
-                                const stats = getUserStats(user)
-                                return <UserCard key={user.id} user={user} stats={stats} onClick={() => handleUserClick(user)} />
+                            filteredUsers.map((managedUser) => {
+                                const stats = getUserStats(managedUser)
+                                return (
+                                    <UserCard
+                                        key={managedUser.id}
+                                        user={managedUser}
+                                        stats={stats}
+                                        onClick={() => handleUserClick(managedUser)}
+                                    />
+                                )
                             })
                         ) : (
                             <div className="text-center py-8 text-muted-foreground">

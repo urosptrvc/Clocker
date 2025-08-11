@@ -1,14 +1,16 @@
 import { NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 import { hash } from "bcrypt"
-import {getServerSession} from "next-auth";
-import {authOptions} from "@/lib/auth";
+import {ValidateApiToken} from "@/lib/validateApiToken";
 
 export async function POST(req: Request) {
     try {
-        const session = await getServerSession(authOptions);
-        if (session?.user?.role !== "admin") {
-            return NextResponse.json({ error: "Nemate privilegiju" }, { status: 401 })
+        const userSession = await ValidateApiToken()
+        if(userSession.role !== "admin"){
+            return NextResponse.json(
+                { error: "Samo admin ima pristup" },
+                { status: 403 }
+            )
         }
         const body = await req.json()
         const { username, password, name, role, satnica } = body
@@ -25,7 +27,7 @@ export async function POST(req: Request) {
         })
         if (existingUser) {
             return NextResponse.json(
-                { error: "Korisnik sa tim emailom već postoji." },
+                { error: "Korisnik sa tim usernameom već postoji." },
                 { status: 400 }
             )
         }

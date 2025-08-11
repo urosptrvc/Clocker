@@ -9,14 +9,13 @@ import { SessionSummarySkeleton } from "@/app/(dashboard)/history/_components/se
 import { SessionSummary } from "@/app/(dashboard)/history/_components/session-summary"
 import { SessionsListSkeleton } from "@/app/(dashboard)/history/_components/sessions-list-skeleton"
 import { SessionsList } from "@/app/(dashboard)/history/_components/sessions-list"
-import { useSession } from "next-auth/react"
+import {useUserContext} from "@/context/UserContext";
 import {useRouter} from "next/navigation";
 
 export default function WorkSessionTracker() {
-    const session = useSession()
+    const {user,loading} = useUserContext()
     const router = useRouter()
-    if (!session?.data?.user) router.push("/login")
-
+    if(!user) router.push("/auth/login")
     const [sortBy, setSortBy] = useState<"date" | "duration">("date")
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc")
     const [filterBy, setFilterBy] = useState<"all" | "today" | "week" | "month" | "custom-month">("all")
@@ -108,6 +107,8 @@ export default function WorkSessionTracker() {
                 return "Ukupno"
         }
     }
+
+    if(loading)return null
 
     return (
         <div className="container mx-auto p-6 space-y-6">

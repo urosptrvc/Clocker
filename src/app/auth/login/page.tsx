@@ -1,39 +1,44 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import {signIn, useSession} from "next-auth/react";
 import AuthCard from "@/components/auth/AuthCard";
 import AuthForm from "@/components/auth/AuthForm";
 import { useNotifier } from "@/app/hooks/useNotifications";
 import {useRouter} from "next/navigation";
 import LoadSpinner from "@/components/LoadSpinner";
+import {useApi} from "@/app/hooks/useApi";
+import {useUserContext} from "@/context/UserContext";
 
 const LoginPage = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const {apiPost} = useApi();
+    const {login} = useUserContext()
     const { notifyError, notifySuccess } = useNotifier();
     const router = useRouter();
-    const session = useSession()
-    if(session?.data?.user) router.push("/clocktime")
     const handleLogin = async (e: FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
 
-        const result = await signIn("credentials", {
-            username,
-            password
-        });
-
-
-        if (result?.error) {
-            notifyError("Error", result.error);
-        } else {
-            notifySuccess("Success", "Uspesna prijava");
+        try{
+            const result = await apiPost("/api/auth/login", {
+                username,
+                password
+            });
+            if (result?.error || !result?.token || !result?.user) {
+                notifyError("Error", result.error);
+                setIsLoading(false);
+            } else {
+                login(result.user,result.token)
+                notifySuccess("Success", "Uspesna prijava");
+                router.push("/clocktime");
+            }
+            setIsLoading(false);
+        } catch(e) {
+            notifyError("Error", e.message);
             setIsLoading(false);
         }
-        setIsLoading(false);
-        router.push("/clocktime");
 
     };
 

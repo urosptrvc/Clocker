@@ -1,15 +1,17 @@
 import { NextResponse } from "next/server"
-import { getServerSession } from "next-auth"
 import { prisma } from "@/lib/prisma"
-import { authOptions } from "@/lib/auth"
+import {ValidateApiToken} from "@/lib/validateApiToken";
 
 export async function GET() {
-    const session = await getServerSession(authOptions)
-    if (!session?.user) {
-        return NextResponse.json({ error: "Nemate privilegiju" }, { status: 401 })
-    }
 
-    const userId = session.user.id
+    const userSession = await ValidateApiToken()
+    if(userSession){
+        return NextResponse.json(
+            { error: "Nemate pristup" },
+            { status: 403 }
+        )
+    }
+    const userId = userSession.id
 
     const sessions = await prisma.clockSession.findMany({
         where: { userId },
@@ -36,7 +38,7 @@ export async function GET() {
         const regular = sess.regularMinutes ?? Math.min(600, duration ?? 0)
         const overtime = sess.overtimeMinutes ?? Math.max(0, (duration ?? 0) - 600)
 
-        if(session?.user?.role == "admin"){
+        if(userSession?.role == "admin"){
             return {
                 id: sess.id,
                 clockIn: sess.clockInEvent.timestamp,

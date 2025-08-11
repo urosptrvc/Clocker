@@ -1,17 +1,12 @@
 import { NextResponse } from "next/server"
-import {getServerSession} from "next-auth";
 import {prisma} from "@/lib/prisma";
-import {authOptions} from "@/lib/auth";
+import {ValidateApiToken} from "@/lib/validateApiToken";
 
 export async function GET() {
-    const session = await getServerSession(authOptions)
-    if (!session?.user) {
-        return NextResponse.json({ error: "Nemate privilegiju" }, { status: 401 })
-    }
-
+    const userSession = await ValidateApiToken()
     const activeSession = await prisma.clockSession.findFirst({
         where: {
-            userId: session.user.id,
+            userId: userSession.id,
             clockOutEventId: null,
         },
         include: {

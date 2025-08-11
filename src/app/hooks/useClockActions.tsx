@@ -1,7 +1,8 @@
+"use client"
 import { useState } from "react";
 import { useApi } from "@/app/hooks/useApi";
 import { useNotifier } from "@/app/hooks/useNotifications";
-import {useSession} from "next-auth/react";
+import {useUserContext} from "@/context/UserContext";
 
 export function useClockActions(fetchClockedState) {
     const [location, setLocation] = useState("");
@@ -12,14 +13,13 @@ export function useClockActions(fetchClockedState) {
     const [notes, setNotes] = useState("");
     const { apiPost } = useApi();
     const { notifyError, notifySuccess } = useNotifier();
-    const session = useSession();
-
+    const {user} = useUserContext()
     async function handleClockOut() {
         try {
             isLoad(true);
             const coords = await getCoords();
             let payload = {}
-            if (session?.data?.user?.role === "teren") {
+            if (user?.role === "teren") {
                 const formData = new FormData()
                 formData.append("location", location)
                 formData.append("notes", notes)
@@ -54,13 +54,13 @@ export function useClockActions(fetchClockedState) {
     async function handleClockInSubmit(e) {
         e.preventDefault();
         try {
-            if (!session) {
+            if (!user) {
                 return;
             }
             isLoad(true);
             const coords = await getCoords();
             let payload = {}
-            if (session?.data?.user?.role === "teren") {
+            if (user.role === "teren") {
                 const formData = new FormData()
                 formData.append("location", location)
                 formData.append("notes", notes)

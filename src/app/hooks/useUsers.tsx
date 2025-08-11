@@ -14,9 +14,10 @@ export function useUsers() {
     async function fetchUsers() {
         setIsLoading(true);
         try {
-            const result = await apiGet("/api/users");
-            if (result) {
-                setUsers(result)
+            const req = await apiGet("/api/users");
+            const res = await req.json()
+            if (res) {
+                setUsers(res)
             }
         } catch (error) {
             const errorData = JSON.parse(error.message);
@@ -30,9 +31,10 @@ export function useUsers() {
     async function fetchUser(id) {
         setIsLoading(true);
         try {
-            const result = await apiGet(`/api/users/${id}`);
-            if (result) {
-                setUser(result)
+            const req = await apiGet(`/api/users/${id}`);
+            const res = await req.json()
+            if (res) {
+                setUser(res)
             }
         } catch (error) {
             const errorData = JSON.parse(error.message);

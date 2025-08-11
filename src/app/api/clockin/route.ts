@@ -1,18 +1,20 @@
 import {NextResponse} from "next/server"
 import {ClockType} from "@prisma/client"
-import {getServerSession} from "next-auth";
 import {prisma} from "@/lib/prisma";
-import {authOptions} from "@/lib/auth";
 import {verifyLocationDynamic} from "@/lib/location";
 import {KNOWN_LOCATIONS} from "@/lib/const";
 import {saveImage} from "@/lib/saveImage";
+import {ValidateApiToken} from "@/lib/validateApiToken";
 
 export async function POST(req: Request) {
-    const session = await getServerSession(authOptions);
-    if (!session?.user) {
-        return NextResponse.json({error: "Nemate privilegiju"}, {status: 401});
+    const userSession = await ValidateApiToken()
+    if(userSession){
+        return NextResponse.json(
+            { error: "Nemate pristup" },
+            { status: 403 }
+        )
     }
-    const userId = session.user.id;
+    const userId = userSession.id;
 
     const contentType = req.headers.get("content-type");
 

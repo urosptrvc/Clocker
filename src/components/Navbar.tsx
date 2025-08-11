@@ -1,41 +1,35 @@
 "use client"
 
-import { useState } from "react"
+import {useState} from "react"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { signOut, useSession } from "next-auth/react"
-import { useNotifier } from "@/app/hooks/useNotifications"
+import {Button} from "@/components/ui/button"
+import {Sheet, SheetContent, SheetTrigger} from "@/components/ui/sheet"
+import {useNotifier} from "@/app/hooks/useNotifications"
 import {usePathname, useRouter} from "next/navigation"
 import Image from "next/image"
 import PopUp from "./PopUp"
-import { ThemeSwitcherBtn } from "@/components/ThemeSwitcherBtn"
-import { motion } from "framer-motion"
-import { Menu } from "lucide-react"
+import {ThemeSwitcherBtn} from "@/components/ThemeSwitcherBtn"
+import {motion} from "framer-motion"
+import {Menu} from "lucide-react"
+import {useUserContext} from "@/context/UserContext";
 
 const Navbar = () => {
-    const { notifySuccess, notifyError } = useNotifier()
+    const {notifySuccess, notifyError} = useNotifier()
     const pathname = usePathname()
     const router = useRouter()
     const [isModalOpen, setModalOpen] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-    const session = useSession()
-
-    if (!session) router.push("/login")
-
+    const {user, loading, logout} = useUserContext()
+    if(loading) return null
     const hiddenRoutes = ["/auth/login", "/auth/register"]
     if (hiddenRoutes.includes(pathname)) {
         return null
     }
-
     const handleLogout = async () => {
         setIsLoading(true)
         try {
-            await signOut({
-                callbackUrl: "/auth/login",
-                redirect: true,
-            })
+            logout()
             notifySuccess("Success", "Logged out successfully!")
             setModalOpen(false)
         } catch (error) {
@@ -43,6 +37,7 @@ const Navbar = () => {
             console.error("Logout error:", error)
         } finally {
             setIsLoading(false)
+            router.push("/login")
         }
     }
 
@@ -51,9 +46,9 @@ const Navbar = () => {
     return (
         <>
             <motion.nav
-                initial={{ opacity: 0, y: -50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
+                initial={{opacity: 0, y: -50}}
+                animate={{opacity: 1, y: 0}}
+                transition={{duration: 0.5}}
                 className="border-b shadow sticky top-0 bg-background/80 backdrop-blur-sm z-50"
             >
                 <div className="container mx-auto flex items-center justify-between py-4 px-4 md:px-6">
@@ -62,7 +57,7 @@ const Navbar = () => {
                         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                             <SheetTrigger asChild>
                                 <Button variant="ghost" size="icon">
-                                    <Menu className="h-6 w-6" />
+                                    <Menu className="h-6 w-6"/>
                                     <span className="sr-only">Toggle menu</span>
                                 </Button>
                             </SheetTrigger>
@@ -70,14 +65,15 @@ const Navbar = () => {
                                 <div className="flex flex-col space-y-6 mt-6">
                                     {/* Theme Switcher in Mobile */}
                                     <div className="flex items-center space-x-3">
-                                        <ThemeSwitcherBtn />
+                                        <ThemeSwitcherBtn/>
                                         <span className="text-sm">Promeni temu</span>
                                     </div>
 
                                     {/* Admin Panel Link in Mobile */}
-                                    {session?.data?.user?.role === "admin" && (
+                                    {user?.role === "admin" && (
                                         <Link href="/admin">
-                                            <Button variant="outline" className="w-full justify-start bg-transparent" onClick={() => setIsMobileMenuOpen(false)}>
+                                            <Button variant="outline" className="w-full justify-start bg-transparent"
+                                                    onClick={() => setIsMobileMenuOpen(false)}>
                                                 Admin Panel
                                             </Button>
                                         </Link>
@@ -101,7 +97,7 @@ const Navbar = () => {
 
                     {/* Desktop Theme Switcher */}
                     <div className="hidden md:flex items-center space-x-3 flex-1">
-                        <ThemeSwitcherBtn />
+                        <ThemeSwitcherBtn/>
                         <span className="text-sm">Promeni temu</span>
                     </div>
 
@@ -109,7 +105,7 @@ const Navbar = () => {
                     <div className="flex justify-center items-center flex-1 md:flex-1">
                         <Link href="/clocktime">
                             <div className="flex flex-col items-center hover:opacity-90 transition-opacity">
-                                <Image src="/logo.png" alt="Logo" width={100} height={50} />
+                                <Image src="/logo.png" alt="Logo" width={100} height={50}/>
                                 <h1 className="text-xs sm:text-sm md:text-base lg:text-lg font-bold md:mt-2 text-center leading-tight">
                                     VS Energy Clocker
                                 </h1>
@@ -119,7 +115,7 @@ const Navbar = () => {
 
                     {/* Desktop Navigation */}
                     <div className="hidden md:flex items-center space-x-4 lg:space-x-6 flex-1 justify-end">
-                        {session?.data?.user?.role === "admin" && (
+                        {user?.role === "admin" && (
                             <Link href="/admin">
                                 <Button variant="outline" className="text-sm bg-transparent">
                                     Admin Panel
