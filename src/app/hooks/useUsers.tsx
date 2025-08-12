@@ -1,6 +1,6 @@
 "use client"
 
-import {useState, useEffect} from "react";
+import {useEffect, useState} from "react";
 import {useApi} from "@/app/hooks/useApi";
 import {useNotifier} from "@/app/hooks/useNotifications";
 
@@ -60,9 +60,9 @@ export function useUsers() {
 
     async function updateUser(id, data: any) {
         try {
-            const result = await apiPatch(`/api/users/${id}`, data);
+            const req = await apiPatch(`/api/users/${id}`, data);
             await fetchUser(id);
-            return result;
+            return await req.json();
         } catch (error) {
             const errorData = JSON.parse(error.message);
             notifyError("Greška prilikom ažuriranja", errorData.error);

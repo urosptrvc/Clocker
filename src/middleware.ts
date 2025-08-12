@@ -14,10 +14,10 @@ export async function middleware(request: NextRequest) {
     const sessionJwt = request.cookies.get(clientTokenName)?.value as string
 
     // If no JWT, redirect to login
-    // if (!sessionJwt) {
-    //     console.log("Missing session token - redirect to login")
-    //     return NextResponse.redirect(new URL("/auth/login", request.url))
-    // }
+    if (!sessionJwt) {
+        console.log("Missing session token - redirect to login")
+        return NextResponse.redirect(new URL("/auth/login", request.url))
+    }
 
     // Check the expiration session and redirect if needed
     const session = await verifyToken(sessionJwt)

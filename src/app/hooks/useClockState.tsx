@@ -14,10 +14,11 @@ export function useClockingState() {
     async function fetchClockedState() {
         setIsLoading(true);
         try {
-            const result:any = await apiGet("/api/clock");
-            if (result.activeSession) {
+            const req = await apiGet("/api/clock");
+            const res = await req.json()
+            if (res.activeSession) {
                 setClocked(true);
-                setActiveSession(result.activeSession);
+                setActiveSession(res.activeSession);
             } else {
                 setClocked(false);
                 setActiveSession(null);

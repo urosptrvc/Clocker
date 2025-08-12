@@ -13,9 +13,10 @@ export function useSessions() {
     async function fetchSessions() {
         setIsLoading(true);
         try {
-            const result = await apiGet("/api/sessions");
-            if (result) {
-                setSessions(result);
+            const req = await apiGet("/api/sessions");
+            const res = await req.json()
+            if (res) {
+                setSessions(res);
             } else {
                 setSessions(null);
             }

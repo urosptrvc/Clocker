@@ -17,9 +17,9 @@ const AuthCard = ({ title, children }: Props) => {
                 className="w-full max-w-md rounded-xl border bg-card/50 p-6 shadow-lg backdrop-blur-[12px]"
             >
                     <CardHeader>
-                        <div className="flex justify-center mb-4">
+                        <div className="flex justify-center">
                             {/* eslint-disable-next-line @next/next/no-img-element */}
-                            <img src="/logo.png" alt="Logo" className="w-[50px] h-[50px]" />
+                            <img src="/logo.png" alt="Logo" className="w-auto h-[60px]" />
                         </div>
                         <CardTitle className="text-center">{title}</CardTitle>
                     </CardHeader>

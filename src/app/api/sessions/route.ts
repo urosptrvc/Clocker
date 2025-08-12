@@ -5,7 +5,7 @@ import {ValidateApiToken} from "@/lib/validateApiToken";
 export async function GET() {
 
     const userSession = await ValidateApiToken()
-    if(userSession){
+    if(!userSession){
         return NextResponse.json(
             { error: "Nemate pristup" },
             { status: 403 }
