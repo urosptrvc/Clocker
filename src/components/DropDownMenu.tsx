@@ -1,7 +1,6 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -16,15 +15,16 @@ import PopUp from "@/components/PopUp";
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNotifier } from "@/app/hooks/useNotifications";
+import {useUserContext} from "@/context/UserContext";
 
 const ActionsMenu = ({ shipId }: { shipId: number }) => {
     const router = useRouter();
-    const { data: session } = useSession();
+    const {user,loading} = useUserContext()
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const queryClient = useQueryClient();
     const { notifyError, notifySuccess } = useNotifier();
-    const isAdmin = session?.user?.role === "admin";
+
 
     const handleRowClick = (id: number) => {
         router.push(`/shipments/${id}`);
@@ -51,6 +51,8 @@ const ActionsMenu = ({ shipId }: { shipId: number }) => {
             notifyError("Error", `Failed to delete shipment ${error.message}`);
         },
     });
+    if(loading)return null;
+    const isAdmin = user?.role === "admin";
 
     return (
         <>
