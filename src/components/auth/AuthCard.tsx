@@ -1,5 +1,4 @@
 import { ReactNode } from "react";
-import Image from "next/image";
 import { CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { motion } from "framer-motion";
 
@@ -19,7 +18,8 @@ const AuthCard = ({ title, children }: Props) => {
             >
                     <CardHeader>
                         <div className="flex justify-center mb-4">
-                            <Image src="/logo.png" alt="Logo" width={50} height={50} />
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src="/logo.png" alt="Logo" className="w-[50px] h-[50px]" />
                         </div>
                         <CardTitle className="text-center">{title}</CardTitle>
                     </CardHeader>
