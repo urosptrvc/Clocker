@@ -11,5 +11,7 @@ export type UserSession = {
   username: string
   role: string
   hourly_rate: any
+  extended_rate: any
   isActive: string
+  exp: any
 }

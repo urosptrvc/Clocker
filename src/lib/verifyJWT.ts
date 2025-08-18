@@ -14,5 +14,11 @@ export const verifyToken = async (apiToken: string): Promise<UserSession | null>
 }
 
 export const validateUserSession = async (): Promise<UserSession> => {
-    return getSession()
+    const now = Math.floor(new Date().getTime() / 1000)
+
+    const session = await getSession()
+    if(session.exp <= now) {
+        throw new Error("Tool API Validation > Token Expired")
+    }
+    return session
 }

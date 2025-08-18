@@ -9,6 +9,7 @@ import {Skeleton} from "@/components/ui/skeleton";
 import {WorkSessionCardField} from "@/app/(dashboard)/clocktime/_components/terenski_radnik/WorkSessionCardField";
 import {WorkSessionCard} from "@/app/(dashboard)/clocktime/_components/WorkSessionCard";
 import {HistoryIcon} from "lucide-react";
+import {WorkSessionMechanicCard} from "@/app/(dashboard)/clocktime/_components/WorkSessionMechanicCard";
 
 export default function ClockTimePage({session}) {
     const { isLoading, clocked, activeSession, fetchClockedState } = useClockingState();
@@ -38,6 +39,12 @@ export default function ClockTimePage({session}) {
                     </div>
                 ) : session.role === "teren" ? (
                     <WorkSessionCardField
+                        isClocked={clocked}
+                        activeSession={activeSession}
+                        clockActions={clockActions}
+                    />
+                ) : session.role === "mehanicar" ? (
+                    <WorkSessionMechanicCard
                         isClocked={clocked}
                         activeSession={activeSession}
                         clockActions={clockActions}

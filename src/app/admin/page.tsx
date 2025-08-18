@@ -195,7 +195,7 @@ export default function Admin() {
                                         key={managedUser.id}
                                         user={managedUser}
                                         stats={stats}
-                                        onClick={() => handleUserClick(managedUser)}
+                                        onClickAction={() => handleUserClick(managedUser)}
                                     />
                                 )
                             })

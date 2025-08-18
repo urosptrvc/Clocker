@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { UserIcon, Mail, Shield, Clock, Timer, CheckCircle, DollarSign, Zap } from "lucide-react"
+import { UserIcon, Shield, Clock, Timer, CheckCircle, DollarSign, Zap } from "lucide-react"
 import { formatDate, formatDuration } from "@/lib/helper"
 
 interface UserCardProps {
@@ -13,6 +13,7 @@ interface UserCardProps {
     role: string
     createdAt: string
     hourly_rate: string
+    extended_rate: string
   }
   stats: {
     totalSessions: number
@@ -24,10 +25,10 @@ interface UserCardProps {
     failedAttempts: number
     averageSession: number
   }
-  onClick: () => void
+  onClickAction: () => void
 }
 
-export function UserCard({ user, stats, onClick }: UserCardProps) {
+export function UserCard({ user, stats, onClickAction }: UserCardProps) {
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("sr-RS", {
       style: "currency",
@@ -41,11 +42,15 @@ export function UserCard({ user, stats, onClick }: UserCardProps) {
       stats.totalDuration > 0 ? Math.round((stats.totalOvertimeMinutes / stats.totalDuration) * 100) : 0
 
   return (
-      <Card className="cursor-pointer hover:shadow-lg transition-all duration-200 active:scale-[0.98]" onClick={onClick}>
+      <Card className="cursor-pointer hover:shadow-lg transition-all duration-200 active:scale-[0.98]" onClick={onClickAction}>
         <CardHeader className="pb-4">
           <div className="flex items-start gap-4">
             <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-              <UserIcon className="h-6 w-6 text-primary" />
+              {user.name
+                  .split(' ')
+                  .map(word => word.charAt(0).toUpperCase())
+                  .join('')
+                  .slice(0, 2)}
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
@@ -58,10 +63,13 @@ export function UserCard({ user, stats, onClick }: UserCardProps) {
                   <Badge variant="outline" className="w-fit text-xs">
                     {formatCurrency(Number.parseFloat(user.hourly_rate || "0"))}/h
                   </Badge>
+                  <Badge variant="secondary" className="w-fit text-xs">
+                    {formatCurrency(Number.parseFloat(user.extended_rate || "0"))}/h
+                  </Badge>
                 </div>
               </div>
               <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-                <Mail className="h-4 w-4 flex-shrink-0" />
+                <UserIcon className="h-4 w-4 flex-shrink-0" />
                 <span className="truncate">{user.username}</span>
               </div>
               <div className="text-xs text-muted-foreground">Dodat {formatDate(user.createdAt)}</div>

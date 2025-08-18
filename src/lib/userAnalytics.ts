@@ -7,10 +7,12 @@ export function getUserAnalytics(user, dateRange) {
     toDate.setHours(23, 59, 59, 999)
 
     // Filter data by date range
-    const filteredAttempts = user.clockAttempts.filter((attempt) => {
-        const attemptDate = new Date(attempt.timestamp)
-        return attemptDate >= fromDate && attemptDate <= toDate
-    })
+    const filteredAttempts = user.clockAttempts
+        .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()) // Sort descending first
+        .filter((attempt) => {
+            const attemptDate = new Date(attempt.timestamp);
+            return attemptDate >= fromDate && attemptDate <= toDate;
+        });
 
     const filteredSessions = user.clockSessions.filter((session) => {
         const sessionDate = new Date(session.createdAt)
@@ -18,6 +20,7 @@ export function getUserAnalytics(user, dateRange) {
     })
 
     const hourlyRate = Number.parseFloat(user.hourly_rate || "0")
+    const extendedRate = Number.parseFloat(user.extended_rate || "0")
 
     // Basic calculations
     const totalSessions = filteredSessions.length
@@ -31,7 +34,7 @@ export function getUserAnalytics(user, dateRange) {
 
     // Earnings calculations
     const regularEarnings = hourlyRate * (totalRegular / 3600)
-    const overtimeEarnings = hourlyRate * 1.5 * (totalOvertime / 3600) // 1.5x for overtime
+    const overtimeEarnings = extendedRate * (totalOvertime / 3600)
     const totalEarnings = regularEarnings + overtimeEarnings
 
     // Calculate working days in period

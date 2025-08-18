@@ -7,6 +7,8 @@ export const createUserSession = (user):UserSession => {
         username: user.username,
         role: user.role,
         hourly_rate: user.hourly_rate,
-        isActive: user.isActive
+        extended_rate: user.extended_rate,
+        isActive: user.isActive,
+        exp: user.exp
     }
 }

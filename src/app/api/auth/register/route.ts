@@ -13,7 +13,7 @@ export async function POST(req: Request) {
             )
         }
         const body = await req.json()
-        const { username, password, name, role, satnica } = body
+        const { username, password, name, role, satnica, prekovremeno } = body
 
         if (!username || !password) {
             return NextResponse.json(
@@ -40,7 +40,8 @@ export async function POST(req: Request) {
                 password: hashedPassword,
                 name,
                 role: role && role !== "" ? role : "user",
-                hourly_rate: satnica
+                hourly_rate: satnica,
+                extended_rate: prekovremeno
             }
         })
 

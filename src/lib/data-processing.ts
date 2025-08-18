@@ -13,6 +13,7 @@ export const processUserSessions = (user) => {
         regularMinutes: 0,
         overtimeMinutes: 0,
         hourly_rate: user.hourly_rate,
+        extended_rate: user.extended_rate,
         earningsRegular: 0,
         earningsOvertime: 0,
         createdAt: session.createdAt,
@@ -30,8 +31,9 @@ export const processUserSessions = (user) => {
 
     // Calculate earnings
     const hourlyRate = Number.parseFloat(user.hourly_rate) || 0
+    const extendedRate = Number.parseFloat(user.extended_rate) || 0
     const earningsRegular = (regularMinutes / 60) * hourlyRate
-    const earningsOvertime = (overtimeMinutes / 60) * hourlyRate * 1.5 // 1.5x rate for overtime
+    const earningsOvertime = (overtimeMinutes / 60) * extendedRate
 
     return {
       id: session.id,

@@ -14,7 +14,7 @@ import {
     Activity,
     MapPin,
     Briefcase,
-    ImageIcon, ArrowLeft, UserIcon, Shield, Download, Pencil,
+    ImageIcon, ArrowLeft, Shield, Download, Pencil,
 } from "lucide-react"
 import {Drawer, DrawerClose, DrawerContent, DrawerHeader, DrawerTitle} from "@/components/ui/drawer"
 import {useEffect, useState} from "react"
@@ -136,7 +136,11 @@ export default function AnalyticsDashboard() {
                                     </Button>
                                     <div
                                         className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
-                                        <UserIcon className="h-6 w-6 text-primary"/>
+                                        {user.name
+                                            .split(' ')
+                                            .map(word => word.charAt(0).toUpperCase())
+                                            .join('')
+                                            .slice(0, 2)}
                                     </div>
                                     <div className="min-w-0">
                                         <div className="flex flex-col sm:flex-row sm:items-center gap-2">

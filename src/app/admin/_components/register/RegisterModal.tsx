@@ -26,6 +26,7 @@ const RegisterModal = ({onSuccess}: RegisterModalProps) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [satnica, setSatnica] = useState("");
+    const [prekovremeno, setPrekovremeno] = useState("");
     const [role, setRole] = useState("");
     const {notifyError, notifySuccess} = useNotifier();
     const [isLoading, setIsLoading] = useState(false);
@@ -52,6 +53,7 @@ const RegisterModal = ({onSuccess}: RegisterModalProps) => {
             setUsername("");
             setPassword("");
             setSatnica("");
+            setPrekovremeno("");
             setRole("");
 
             notifySuccess("Uspeh", "Korisnik je uspešno registrovan");
@@ -100,6 +102,12 @@ const RegisterModal = ({onSuccess}: RegisterModalProps) => {
                                 value: satnica,
                                 setValue: setSatnica,
                             },
+                            {
+                                type: "extended_rate",
+                                placeholder: "Prekovremena satnica",
+                                value: prekovremeno,
+                                setValue: setPrekovremeno,
+                            },
                         ]}
                         extraFields={
                             <Select value={role} onValueChange={setRole}>
@@ -110,6 +118,7 @@ const RegisterModal = ({onSuccess}: RegisterModalProps) => {
                                     <SelectItem value="kancelarija">Kancelarija</SelectItem>
                                     <SelectItem value="teren">Terenac</SelectItem>
                                     <SelectItem value="admin">Administrator</SelectItem>
+                                    <SelectItem value="mehanicar">Mehaničar</SelectItem>
                                 </SelectContent>
                             </Select>
                         }

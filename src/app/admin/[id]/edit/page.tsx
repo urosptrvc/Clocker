@@ -26,6 +26,7 @@ type UserFormData = {
     role: string
     hourly_rate: number | null
     password?: string
+    extended_rate: number | null
 }
 
 export default function UserEditAndDelete() {
@@ -39,6 +40,7 @@ export default function UserEditAndDelete() {
         role: "",
         hourly_rate: null,
         password: "",
+        extended_rate: null,
     })
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -58,6 +60,7 @@ export default function UserEditAndDelete() {
                 role: user.role,
                 hourly_rate: user.hourly_rate || null,
                 password: "",
+                extended_rate: user.extended_rate || null,
             })
         }
     }, [user])
@@ -247,6 +250,17 @@ export default function UserEditAndDelete() {
                                         value={formData.hourly_rate || ""}
                                         onChange={handleInputChange}
                                         placeholder="Unesi satnicu"
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="hourly_rate">Satnica (RSD/sat)</Label>
+                                    <Input
+                                        id="extended_rate"
+                                        name="extended_rate"
+                                        type="number"
+                                        value={formData.extended_rate || ""}
+                                        onChange={handleInputChange}
+                                        placeholder="Unesi prekovremenu satnicu"
                                     />
                                 </div>
                             </div>

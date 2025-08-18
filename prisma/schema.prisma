@@ -8,15 +8,16 @@ generator client {
 }
 
 model User {
-  id          String   @id @default(cuid())
-  username    String   @unique
-  password    String
-  name        String?
-  role        String   @default("user")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  hourly_rate Decimal? @db.Decimal(10, 2)
-  isActive    String?  @default("1")
+  id            String   @id @default(cuid())
+  username      String   @unique
+  password      String
+  name          String?
+  role          String   @default("user")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  hourly_rate   Decimal? @db.Decimal(10, 2)
+  extended_rate Decimal? @db.Decimal(10, 2)
+  isActive      String?  @default("1")
 
   clockAttempts ClockAttempt[]
   clockSessions ClockSession[]
