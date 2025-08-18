@@ -15,11 +15,11 @@ import {useRouter} from "next/navigation";
 export default function WorkSessionTracker() {
     const {user,loading} = useUserContext()
     const router = useRouter()
-    if(!user) router.push("/auth/login")
     const [sortBy, setSortBy] = useState<"date" | "duration">("date")
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc")
     const [filterBy, setFilterBy] = useState<"all" | "today" | "week" | "month" | "custom-month">("all")
     const [selectedMonth, setSelectedMonth] = useState<string>(new Date().toISOString().slice(0, 7))
+    if(!user) router.push("/auth/login")
 
     const { sessions, isLoading } = useSessions()
 

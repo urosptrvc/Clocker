@@ -1,14 +1,13 @@
 import {NextResponse} from "next/server"
 import {ClockType} from "@prisma/client"
 import {prisma} from "@/lib/prisma";
-import {verifyLocationDynamic} from "@/lib/location";
+import {setLocationName, verifyLocationDynamic} from "@/lib/location";
 import {KNOWN_LOCATIONS} from "@/lib/const";
 import {saveImage} from "@/lib/saveImage";
 import {ValidateApiToken} from "@/lib/validateApiToken";
 
 export async function POST(req: Request) {
     const userSession = await ValidateApiToken()
-    console.log('userSession', userSession)
     if(!userSession){
         return NextResponse.json(
             { error: "Nemate pristup" },
@@ -42,7 +41,6 @@ export async function POST(req: Request) {
     }
 
     let isSuccess = true;
-
     if (KNOWN_LOCATIONS[location]) {
         try {
             isSuccess = await verifyLocationDynamic(location, coords);
@@ -51,6 +49,9 @@ export async function POST(req: Request) {
             console.error("Greška:", err);
             isSuccess = false;
         }
+
+    } else if (coords && location === "NonSet") {
+        location = await setLocationName(coords);
     } else if (!notes) {
         return NextResponse.json({error: "Clock-in nije uspeo"}, {status: 400});
     }

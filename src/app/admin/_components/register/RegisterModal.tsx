@@ -16,6 +16,7 @@ import Image from "next/image";
 import {Button} from "@/components/ui/button";
 import {DialogClose} from "@/components/ui/dialog";
 import {useApi} from "@/app/hooks/useApi";
+import {Label} from "@/components/ui/label";
 
 type RegisterModalProps = {
     onSuccess?: () => void;
@@ -80,39 +81,46 @@ const RegisterModal = ({onSuccess}: RegisterModalProps) => {
                         fields={[
                             {
                                 type: "text",
-                                placeholder: "Ime i prezime",
+                                placeholder: "Pera Peric",
                                 value: name,
                                 setValue: setName,
+                                label: "Ime i prezime"
                             },
                             {
                                 type: "username",
-                                placeholder: "Korisnicko ime",
+                                placeholder: "peraperic",
                                 value: username,
                                 setValue: setUsername,
+                                label: "Korisnicko ime"
                             },
                             {
                                 type: "password",
-                                placeholder: "Lozinka",
+                                placeholder: "JakaSifra123",
                                 value: password,
                                 setValue: setPassword,
+                                label: "Lozinka"
                             },
                             {
                                 type: "hourly_rate",
-                                placeholder: "Satnica",
+                                placeholder: "500",
                                 value: satnica,
                                 setValue: setSatnica,
+                                label: "Satnica"
                             },
                             {
                                 type: "extended_rate",
-                                placeholder: "Prekovremena satnica",
+                                placeholder: "700",
                                 value: prekovremeno,
                                 setValue: setPrekovremeno,
+                                label: "Prekovremena satnica",
                             },
                         ]}
                         extraFields={
+                        <div className="pt-2 pb-5">
+                            <Label>Odaberi ulogu</Label>
                             <Select value={role} onValueChange={setRole}>
                                 <SelectTrigger className="w-full">
-                                    <SelectValue placeholder="Odaberi ulogu"/>
+                                    <SelectValue placeholder="Uloga"/>
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="kancelarija">Kancelarija</SelectItem>
@@ -121,6 +129,8 @@ const RegisterModal = ({onSuccess}: RegisterModalProps) => {
                                     <SelectItem value="mehanicar">Mehaničar</SelectItem>
                                 </SelectContent>
                             </Select>
+                        </div>
+
                         }
                         onSubmitAction={handleRegister}
                         submitText="Registruj"

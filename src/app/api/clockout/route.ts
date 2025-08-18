@@ -1,7 +1,7 @@
 import {NextResponse} from "next/server"
 import {ClockType} from "@prisma/client"
 import {prisma} from "@/lib/prisma";
-import {verifyLocationDynamic} from "@/lib/location";
+import {setLocationName, verifyLocationDynamic} from "@/lib/location";
 import {KNOWN_LOCATIONS} from "@/lib/const";
 import {saveImage} from "@/lib/saveImage";
 import {ValidateApiToken} from "@/lib/validateApiToken";
@@ -44,17 +44,17 @@ export async function POST(req: Request) {
     if (KNOWN_LOCATIONS[location]) {
         try {
             isSuccess = await verifyLocationDynamic(location, coords);
-            if (!isSuccess) {
-                console.log(`Korisnik nije u dozvoljenoj blizini od ${location}`);
-            }
-        } catch (error) {
-            console.error("Greška pri verifikaciji lokacije:", error);
+            if (!isSuccess) console.log(`Nije u blizini ${location}`);
+        } catch (err) {
+            console.error("Greška:", err);
             isSuccess = false;
         }
+
+    } else if (coords && location === "NonSet") {
+        location = await setLocationName(coords);
     } else if (!notes) {
-        return NextResponse.json({error: "Clock-in nije uspeo"}, {status: 400})
-    } else
-        isSuccess = true
+        return NextResponse.json({error: "Clock-out nije uspeo"}, {status: 400});
+    }
 
     const locationPlace = KNOWN_LOCATIONS[location]?.locc==null ? location : KNOWN_LOCATIONS[location]?.locc
     const attempt = await prisma.clockAttempt.create({

@@ -44,3 +44,19 @@ export async function verifyLocationDynamic(location: string, userCoords: {lat: 
         return false;
     }
 }
+
+export async function setLocationName(coords) {
+    const { lat, lng } = coords;
+    const LOCATIONIQ_API_TOKEN = process.env.LOCATIONIQ_API_TOKEN;
+    try {
+        const response = await fetch(
+            `https://us1.locationiq.com/v1/reverse?key=${LOCATIONIQ_API_TOKEN}&lat=${lat}&lon=${lng}&format=json`
+        );
+        const data = await response.json();
+        return `${data.address.city}, ${data.address.road}` || "Unknown location";
+
+    } catch (error) {
+        console.error("Failed to get location name:", error);
+        return "Unknown location";
+    }
+}

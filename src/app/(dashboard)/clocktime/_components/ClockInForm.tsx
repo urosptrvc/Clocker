@@ -9,14 +9,13 @@ import {useNotifier} from "@/app/hooks/useNotifications";
 import {predefinedLocations} from "@/lib/const";
 
 export function ClockInForm({ load, setLocation, notes, setNotes, onSubmit }) {
-    const [customLocation, setCustomLocation] = useState("");
     const [isCustom, setIsCustom] = useState(false);
     const {notifyError} = useNotifier();
 
     const handleLocationChange = (value) => {
         if (value === "custom") {
             setIsCustom(true);
-            setLocation(""); // Reset location for manual entry
+            setLocation("NonSet");
         } else {
             setIsCustom(false);
             setLocation(value);
@@ -49,19 +48,6 @@ export function ClockInForm({ load, setLocation, notes, setNotes, onSubmit }) {
                             <SelectItem value="custom">Drugo (rucni unos)</SelectItem>
                         </SelectContent>
                     </Select>
-
-                    {isCustom && (
-                        <Input
-                            className="mt-2"
-                            value={customLocation}
-                            onChange={(e) => {
-                                setCustomLocation(e.target.value);
-                                setLocation(e.target.value);
-                            }}
-                            placeholder="Unesite lokaciju"
-                            required
-                        />
-                    )}
                 </div>
 
                 <div>

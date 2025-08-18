@@ -629,14 +629,18 @@ export default function AnalyticsDashboard() {
                                                     <Badge
                                                         variant={user.role === "admin" ? "default" : "secondary"}>{user.role}</Badge>
                                                 </div>
-                                                {user.hourly_rate && (
                                                     <div className="flex justify-between">
                                                         <span className="text-muted-foreground">Satnica:</span>
                                                         <Badge variant="outline" className="text-green-600">
-                                                            {user.hourly_rate} RSD/sat
+                                                            {user.hourly_rate || 0} RSD/sat
                                                         </Badge>
                                                     </div>
-                                                )}
+                                                    <div className="flex justify-between">
+                                                        <span className="text-muted-foreground">Prekovremena satnica:</span>
+                                                        <Badge variant="outline" className="text-orange-600">
+                                                            {user.extended_rate || 0} RSD/sat
+                                                        </Badge>
+                                                    </div>
                                                 <div className="flex justify-between">
                                                     <span className="text-muted-foreground">ID korisnika:</span>
                                                     <span className="font-mono text-sm">{user.id}</span>

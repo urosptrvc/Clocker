@@ -22,7 +22,6 @@ export function ClockOutFormField({
                                       back,
                                       mileage
                                   }) {
-    const [customLocation, setCustomLocation] = useState("")
     const [isCustom, setIsCustom] = useState(false)
     const {notifyError} = useNotifier()
 
@@ -135,19 +134,6 @@ export function ClockOutFormField({
                             <SelectItem value="custom">Drugo (rucni unos)</SelectItem>
                         </SelectContent>
                     </Select>
-
-                    {isCustom && (
-                        <Input
-                            className="mt-2"
-                            value={customLocation}
-                            onChange={(e) => {
-                                setCustomLocation(e.target.value)
-                                setLocation(e.target.value)
-                            }}
-                            placeholder="Unesite lokaciju"
-                            required
-                        />
-                    )}
                 </div>
 
                 <div>

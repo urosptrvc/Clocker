@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useApi } from "@/app/hooks/useApi";
 import { useNotifier } from "@/app/hooks/useNotifications";
 import {useUserContext} from "@/context/UserContext";
+import {log} from "node:util";
 
 export function useClockActions(fetchClockedState) {
     const [location, setLocation] = useState("");
@@ -100,6 +101,7 @@ export function useClockActions(fetchClockedState) {
 
             navigator.geolocation.getCurrentPosition(
                 (position) => {
+                    console.log("Position",position)
                     const { latitude, longitude } = position.coords;
                     resolve({ lat: latitude, lng: longitude });
                 },
