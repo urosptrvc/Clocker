@@ -51,20 +51,21 @@ const LoginPage = () => {
                     fields={[
                         {
                             type: "username",
-                            placeholder: "Korisnicko ime",
+                            placeholder: "peraperic",
                             value: username,
                             setValue: setUsername,
+                            label: "Korisnicko ime"
                         },
                         {
                             type: "password",
-                            placeholder: "Sifra",
+                            placeholder: "JakaSifra123",
                             value: password,
                             setValue: setPassword,
+                            label: "Lozinka"
                         },
                     ]}
                     onSubmitAction={handleLogin}
-                    submitText="Prijavi se"
-                />
+                    submitText="Prijavi se" label={""}                />
             </LoadSpinner>
         </AuthCard>
     );

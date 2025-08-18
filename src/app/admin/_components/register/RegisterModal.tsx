@@ -116,7 +116,7 @@ const RegisterModal = ({onSuccess}: RegisterModalProps) => {
                             },
                         ]}
                         extraFields={
-                        <div className="pt-2 pb-5">
+                        <div className="pt-2">
                             <Label>Odaberi ulogu</Label>
                             <Select value={role} onValueChange={setRole}>
                                 <SelectTrigger className="w-full">
@@ -133,7 +133,7 @@ const RegisterModal = ({onSuccess}: RegisterModalProps) => {
 
                         }
                         onSubmitAction={handleRegister}
-                        submitText="Registruj"
+                        submitText="Registruj" label={""}
                     />
                 </LoadSpinner>
             </CardContent>

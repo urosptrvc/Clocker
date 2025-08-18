@@ -9,7 +9,7 @@ type Props = {
         placeholder: string;
         value: string;
         setValue: (value: string) => void;
-        label: string;
+        label?: string;
     }[];
     onSubmitAction: (e: FormEvent) => void;
     submitText: string;
@@ -34,7 +34,7 @@ const AuthForm = ({fields, onSubmitAction, submitText, extraFields}: Props) => {
                 </div>
             ))}
             {extraFields}
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full mt-5">
                 {submitText}
             </Button>
         </form>
