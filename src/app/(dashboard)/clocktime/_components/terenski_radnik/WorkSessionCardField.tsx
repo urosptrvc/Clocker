@@ -1,7 +1,7 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { ActiveSessionDisplayField } from "./ActiveSessionDisplayField";
 import { ClockInFormField } from "./ClockInFormField";
 import {ClockOutFormField} from "@/app/(dashboard)/clocktime/_components/terenski_radnik/ClockOutFormField";
+import {ActiveSessionDisplay} from "@/app/(dashboard)/clocktime/_components/ActiveSessionDisplay";
 
 export function WorkSessionCardField({ isClocked, activeSession, clockActions }) {
     const {
@@ -29,7 +29,7 @@ export function WorkSessionCardField({ isClocked, activeSession, clockActions })
             <CardContent className="space-y-4">
                 {isClocked && activeSession ? (
                     <div className="space-y-4">
-                        <ActiveSessionDisplayField activeSession={activeSession} />
+                        <ActiveSessionDisplay activeSession={activeSession} />
                         <ClockOutFormField
                             load={load}
                             setLocation={setLocation}

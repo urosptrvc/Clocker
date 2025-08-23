@@ -1,7 +1,7 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { ActiveSessionDisplay } from "./ActiveSessionDisplay";
-import { ClockInForm } from "./ClockInForm";
-import {ClockOutForm} from "@/app/(dashboard)/clocktime/_components/ClockOutForm";
+import { ActiveSessionDisplay } from "../ActiveSessionDisplay";
+import {ClockInFormMechanics} from "@/app/(dashboard)/clocktime/_components/mehanicar/ClockInFormMechanics";
+import { ClockOutFormMechanics } from "./ClockOutFormMechanics";
 
 export function WorkSessionMechanicCard({ isClocked, activeSession, clockActions }) {
     const {
@@ -24,7 +24,7 @@ export function WorkSessionMechanicCard({ isClocked, activeSession, clockActions
                 {isClocked && activeSession ? (
                     <div className="space-y-4">
                         <ActiveSessionDisplay activeSession={activeSession} />
-                        <ClockOutForm
+                        <ClockOutFormMechanics
                             load={load}
                             setLocation={setLocation}
                             notes={notes}
@@ -33,7 +33,7 @@ export function WorkSessionMechanicCard({ isClocked, activeSession, clockActions
                         />
                     </div>
                 ) : (
-                    <ClockInForm
+                    <ClockInFormMechanics
                         load={load}
                         setLocation={setLocation}
                         notes={notes}

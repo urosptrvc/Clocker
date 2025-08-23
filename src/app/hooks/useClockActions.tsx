@@ -3,7 +3,6 @@ import { useState } from "react";
 import { useApi } from "@/app/hooks/useApi";
 import { useNotifier } from "@/app/hooks/useNotifications";
 import {useUserContext} from "@/context/UserContext";
-import {log} from "node:util";
 
 export function useClockActions(fetchClockedState) {
     const [location, setLocation] = useState("");
@@ -59,7 +58,14 @@ export function useClockActions(fetchClockedState) {
                 return;
             }
             isLoad(true);
-            const coords = await getCoords();
+            let coords = null
+            try{
+                coords = await getCoords();
+            }catch(error) {
+                const errorData = JSON.parse(error.message);
+                notifyError("Error", errorData.error)
+                return null
+            }
             let payload = {}
             if (user.role === "teren") {
                 const formData = new FormData()
@@ -96,17 +102,24 @@ export function useClockActions(fetchClockedState) {
     async function getCoords() {
         return new Promise((resolve, reject) => {
             if (!navigator.geolocation) {
-                return reject(new Error("Geolokacija nije podržana."));
+                return reject(new Error(JSON.stringify({ error: "Geolokacija nije podržana." })));
             }
 
             navigator.geolocation.getCurrentPosition(
                 (position) => {
-                    console.log("Position",position)
                     const { latitude, longitude } = position.coords;
                     resolve({ lat: latitude, lng: longitude });
                 },
                 (error) => {
-                    reject(new Error(`Neuspešno pribavljanje lokacije. ${error}`));
+                    let message = "Nepoznata greška.";
+                    if (error.code === error.PERMISSION_DENIED) {
+                        message = "Dozvola za lokaciju je odbijena.";
+                    } else if (error.code === error.POSITION_UNAVAILABLE) {
+                        message = "Lokacijske informacije nisu dostupne.";
+                    } else if (error.code === error.TIMEOUT) {
+                        message = "Isteklo je vreme za dobijanje lokacije.";
+                    }
+                    reject(new Error(JSON.stringify({ error: message })));
                 },
                 {
                     enableHighAccuracy: true,
@@ -116,6 +129,7 @@ export function useClockActions(fetchClockedState) {
             );
         });
     }
+
 
     return {
         load,

@@ -9,7 +9,7 @@ import {Skeleton} from "@/components/ui/skeleton";
 import {WorkSessionCardField} from "@/app/(dashboard)/clocktime/_components/terenski_radnik/WorkSessionCardField";
 import {WorkSessionCard} from "@/app/(dashboard)/clocktime/_components/WorkSessionCard";
 import {HistoryIcon} from "lucide-react";
-import {WorkSessionMechanicCard} from "@/app/(dashboard)/clocktime/_components/WorkSessionMechanicCard";
+import {WorkSessionMechanicCard} from "@/app/(dashboard)/clocktime/_components/mehanicar/WorkSessionMechanicCard";
 
 export default function ClockTimePage({session}) {
     const { isLoading, clocked, activeSession, fetchClockedState } = useClockingState();

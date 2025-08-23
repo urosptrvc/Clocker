@@ -19,7 +19,6 @@ export default function WorkSessionTracker() {
     const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc")
     const [filterBy, setFilterBy] = useState<"all" | "today" | "week" | "month" | "custom-month">("all")
     const [selectedMonth, setSelectedMonth] = useState<string>(new Date().toISOString().slice(0, 7))
-    if(!user) router.push("/auth/login")
 
     const { sessions, isLoading } = useSessions()
 
@@ -108,7 +107,8 @@ export default function WorkSessionTracker() {
         }
     }
 
-    if(loading)return null
+    if(loading || !user) return null
+    if(!user) router.push ('/auth/login')
 
     return (
         <div className="container mx-auto p-6 space-y-6">

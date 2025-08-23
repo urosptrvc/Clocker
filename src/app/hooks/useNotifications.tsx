@@ -16,7 +16,7 @@ export function useNotifier() {
 
     function notifySuccess(title: string, description?: string) {
         toast({
-            variant: "default",
+            variant: "success",
             title,
             description,
         })
