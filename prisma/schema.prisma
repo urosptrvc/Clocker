@@ -58,6 +58,7 @@ model ClockSession {
   overtimeMinutes Int?
   regularMinutes  Int?
 
+  fieldWork Json?
   createdAt DateTime @default(now())
 
   @@map("clock_sessions")

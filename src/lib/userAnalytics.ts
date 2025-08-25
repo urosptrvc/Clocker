@@ -76,7 +76,7 @@ export function getUserAnalytics(user, dateRange) {
         dailyStats[dayName].overtime += session.overtimeMinutes * 60
         dailyStats[dayName].regular += session.regularMinutes * 60
         dailyStats[dayName].earnings +=
-            hourlyRate * (session.regularMinutes / 60) + hourlyRate * 1.5 * (session.overtimeMinutes / 60)
+            hourlyRate * (session.regularMinutes / 60) + extendedRate * 1.5 * (session.overtimeMinutes / 60)
     })
 
     // Populate daily stats from attempts
@@ -191,7 +191,7 @@ export function getUserAnalytics(user, dateRange) {
             const weekSuccessful = weekAttempts.filter((a) => a.success).length
             const weekSuccessRate = weekAttempts.length > 0 ? (weekSuccessful / weekAttempts.length) * 100 : 0
             const weekEarnings = weekSessions.reduce(
-                (sum, s) => sum + hourlyRate * (s.regularMinutes / 60) + hourlyRate * 1.5 * (s.overtimeMinutes / 60),
+                (sum, s) => sum + hourlyRate * (s.regularMinutes / 60) + extendedRate * 1.5 * (s.overtimeMinutes / 60),
                 0,
             )
 
@@ -228,7 +228,7 @@ export function getUserAnalytics(user, dateRange) {
         const daySuccessful = dayAttempts.filter((a) => a.success).length
         const daySuccessRate = dayAttempts.length > 0 ? (daySuccessful / dayAttempts.length) * 100 : 0
         const dayEarnings = daySessions.reduce(
-            (sum, s) => sum + hourlyRate * (s.regularMinutes / 60) + hourlyRate * 1.5 * (s.overtimeMinutes / 60),
+            (sum, s) => sum + hourlyRate * (s.regularMinutes / 60) + extendedRate * 1.5 * (s.overtimeMinutes / 60),
             0,
         )
 

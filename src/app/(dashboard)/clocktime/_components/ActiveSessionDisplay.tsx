@@ -19,9 +19,9 @@ export function ActiveSessionDisplay({ activeSession }) {
                     {activeSession.clockInEvent.location}
                 </p>
             )}
-            {activeSession.notes && (
+            {activeSession.clockInEvent?.notes && (
                 <p className="text-sm text-muted-foreground mt-2">
-                    Notes: {activeSession.notes}
+                    Napomene: {activeSession.clockInEvent?.notes}
                 </p>
             )}
         </div>

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo, useEffect } from "react" // Added useEffect
+import { useState, useMemo } from "react" // Added useEffect
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -18,25 +18,16 @@ import { Button } from "@/components/ui/button"
 import RegisterModal from "@/app/admin/_components/register/RegisterModal"
 import { AdminSkeleton } from "@/app/admin/_components/admin-skeleton"
 import { getUserAnalytics } from "@/lib/userAnalytics"
-import { useUserContext } from "@/context/UserContext"
 
 export default function Admin() {
-    const { user: authUser, loading } = useUserContext()
     const router = useRouter()
     const { users, isLoading } = useUsers()
-    console.log("USERS", users)
     const [searchTerm, setSearchTerm] = useState("")
     const [roleFilter, setRoleFilter] = useState("all")
     const [dateRange, setDateRange] = useState({
         from: new Date(new Date().getTime() - 30 * 24 * 60 * 60 * 1000),
         to: new Date(),
     })
-
-    useEffect(() => {
-        if (!authUser && !loading) {
-            router.push("/auth/login")
-        }
-    }, [authUser, loading, router])
 
     const filteredUsers = useMemo(() => {
         return users.filter((managedUser) => {
@@ -78,10 +69,11 @@ export default function Admin() {
             admin: users.filter((managedUser) => managedUser.role === "admin").length,
             teren: users.filter((managedUser) => managedUser.role === "teren").length,
             kancelarija: users.filter((managedUser) => managedUser.role === "kancelarija").length,
+            mehanicar: users.filter((managedUser) => managedUser.role === "mehanicar").length,
         }
     }, [users])
 
-    if (isLoading || loading) {
+    if (isLoading) {
         return <AdminSkeleton />
     }
 
@@ -172,6 +164,7 @@ export default function Admin() {
                                     <SelectItem value="admin">Admin ({roleStats.admin})</SelectItem>
                                     <SelectItem value="teren">Teren ({roleStats.teren})</SelectItem>
                                     <SelectItem value="kancelarija">Kancelarija ({roleStats.kancelarija})</SelectItem>
+                                    <SelectItem value="mehanicar">Mehanicar ({roleStats.mehanicar})</SelectItem>
                                 </SelectContent>
                             </Select>
                         </div>

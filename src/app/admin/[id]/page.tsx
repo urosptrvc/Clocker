@@ -14,7 +14,7 @@ import {
     Activity,
     MapPin,
     Briefcase,
-    ImageIcon, ArrowLeft, Shield, Download, Pencil,
+    ImageIcon, ArrowLeft, Shield, Download, Pencil, Airplay,
 } from "lucide-react"
 import {Drawer, DrawerClose, DrawerContent, DrawerHeader, DrawerTitle} from "@/components/ui/drawer"
 import {useEffect, useState} from "react"
@@ -66,7 +66,7 @@ export default function AnalyticsDashboard() {
         setSelectedAttempt(attempt)
         setIsAttemptDrawerOpen(true)
     }
-
+    console.log("anals", anals)
     const getAttemptImages = (attempt) => {
         if (!attempt) return []
         return [
@@ -629,18 +629,18 @@ export default function AnalyticsDashboard() {
                                                     <Badge
                                                         variant={user.role === "admin" ? "default" : "secondary"}>{user.role}</Badge>
                                                 </div>
-                                                    <div className="flex justify-between">
-                                                        <span className="text-muted-foreground">Satnica:</span>
-                                                        <Badge variant="outline" className="text-green-600">
-                                                            {user.hourly_rate || 0} RSD/sat
-                                                        </Badge>
-                                                    </div>
-                                                    <div className="flex justify-between">
-                                                        <span className="text-muted-foreground">Prekovremena satnica:</span>
-                                                        <Badge variant="outline" className="text-orange-600">
-                                                            {user.extended_rate || 0} RSD/sat
-                                                        </Badge>
-                                                    </div>
+                                                <div className="flex justify-between">
+                                                    <span className="text-muted-foreground">Satnica:</span>
+                                                    <Badge variant="outline" className="text-green-600">
+                                                        {user.hourly_rate || 0} RSD/sat
+                                                    </Badge>
+                                                </div>
+                                                <div className="flex justify-between">
+                                                    <span className="text-muted-foreground">Prekovremena satnica:</span>
+                                                    <Badge variant="outline" className="text-orange-600">
+                                                        {user.extended_rate || 0} RSD/sat
+                                                    </Badge>
+                                                </div>
                                                 <div className="flex justify-between">
                                                     <span className="text-muted-foreground">ID korisnika:</span>
                                                     <span className="font-mono text-sm">{user.id}</span>
@@ -697,6 +697,42 @@ export default function AnalyticsDashboard() {
                                                             <p>Nema zabelezenih slika</p>
                                                         </div>
                                                     )}
+                                                </CardContent>
+                                            </Card>
+                                        </>
+                                    )}
+                                    {user.role === "mehanicar" && (
+                                        <>
+                                            {/* Images */}
+                                            <Card>
+                                                <CardHeader>
+                                                    <CardTitle className="flex items-center gap-2 text-lg">
+                                                        <Airplay className="h-5 w-5"/>
+                                                        Zapisi o izlascima na teren
+                                                    </CardTitle>
+                                                </CardHeader>
+                                                <CardContent>
+                                                    {user.session.fieldWork?.fieldNotes?.length > 0 ? (
+                                                        <div className="mt-4 space-y-2">
+                                                            {session.fieldWork.fieldNotes.map((note, idx) => (
+                                                                <div
+                                                                    key={idx}
+                                                                    className="flex items-center justify-between gap-4 p-2 rounded-lg bg-background shadow-sm text-sm"
+                                                                >
+                                                                    <span className="text-foreground">
+                                                                      <span
+                                                                          className="font-medium">Napomena:</span> {note.notes}
+                                                                    </span>
+                                                                    <span className="text-muted-foreground">
+                                                                      {formatTime(new Date(note.time))}
+                                                                    </span>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    ) : (<div className="text-center py-8 text-muted-foreground">
+                                                        <Airplay className="h-12 w-12 mx-auto mb-2 opacity-50"/>
+                                                        <p>Nema zabelezenih izlazaka</p>
+                                                    </div>)}
                                                 </CardContent>
                                             </Card>
                                         </>
