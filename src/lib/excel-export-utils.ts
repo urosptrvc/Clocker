@@ -180,6 +180,7 @@ export const createAdvancedExcelExport = async (options: ExcelExportOptions) => 
         "Status",
         "Lokacija",
         "Napomene",
+        "Izlazak na terens",
         "Dan u nedelji",
     ]
 
@@ -188,7 +189,17 @@ export const createAdvancedExcelExport = async (options: ExcelExportOptions) => 
     anals.filteredAttempts.forEach((attempt: any, index: number) => {
         const attemptDate = new Date(attempt.timestamp)
         const dayOfWeek = attemptDate.toLocaleDateString("sr-RS", { weekday: "long" })
-
+        const worknotes = attempt.fieldWork?.fieldNotes?.length
+            ? attempt.fieldWork.fieldNotes
+                .map((note: any) => {
+                    const time = new Date(note.time).toLocaleTimeString("sr-RS", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                    })
+                    return `${time} - ${note.notes}`
+                })
+                .join(" | ")
+            : "Bez izlaska na teren"
         attemptsData.push([
             index + 1,
             attempt.id,
@@ -198,6 +209,7 @@ export const createAdvancedExcelExport = async (options: ExcelExportOptions) => 
             attempt.success ? "Uspešno" : "Neuspešno",
             attempt.location || "Nije specificirano",
             attempt.notes || "Bez napomena",
+            worknotes || "Bez izlaska na teren",
             dayOfWeek,
         ])
     })
@@ -214,6 +226,7 @@ export const createAdvancedExcelExport = async (options: ExcelExportOptions) => 
         { width: 12 }, // Status
         { width: 20 }, // Location
         { width: 30 }, // Notes
+        { width: 40 }, // Notes
         { width: 15 }, // Day of week
     ]
 

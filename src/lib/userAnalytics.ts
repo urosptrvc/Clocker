@@ -8,11 +8,23 @@ export function getUserAnalytics(user, dateRange) {
 
     // Filter data by date range
     const filteredAttempts = user.clockAttempts
-        .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()) // Sort descending first
+        .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
         .filter((attempt) => {
-            const attemptDate = new Date(attempt.timestamp);
-            return attemptDate >= fromDate && attemptDate <= toDate;
-        });
+            const attemptDate = new Date(attempt.timestamp)
+            return attemptDate >= fromDate && attemptDate <= toDate
+        })
+        .map((attempt) => {
+            const relatedSession = user.clockSessions.find((s) => {
+                if (attempt.type === "IN") return s.clockInEventId === attempt.id
+                if (attempt.type === "OUT") return s.clockOutEventId === attempt.id
+                return false
+            })
+
+            return {
+                ...attempt,
+                fieldWork: relatedSession?.fieldWork ?? null,
+            }
+        })
 
     const filteredSessions = user.clockSessions.filter((session) => {
         const sessionDate = new Date(session.createdAt)

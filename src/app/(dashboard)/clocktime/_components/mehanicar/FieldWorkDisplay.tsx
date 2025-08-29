@@ -64,7 +64,7 @@ export function FieldWorkDisplay({activeSession}) {
                         <Button
                             type="submit"
                             size="lg"
-                            className="w-full"
+                            className="w-full text-white"
                             variant="warning"
                             disabled={load}
                         >

@@ -66,7 +66,6 @@ export default function AnalyticsDashboard() {
         setSelectedAttempt(attempt)
         setIsAttemptDrawerOpen(true)
     }
-    console.log("anals", anals)
     const getAttemptImages = (attempt) => {
         if (!attempt) return []
         return [
@@ -597,9 +596,9 @@ export default function AnalyticsDashboard() {
                                                     <div className="flex justify-between">
                                                         <span className="text-muted-foreground">Lokacija:</span>
                                                         <span className="font-medium flex items-center gap-1">
-                              <MapPin className="h-3 w-3"/>
+                                                            <MapPin className="h-3 w-3"/>
                                                             {selectedAttempt.location}
-                            </span>
+                                                        </span>
                                                     </div>
                                                 )}
                                                 {selectedAttempt.notes && (
@@ -712,9 +711,9 @@ export default function AnalyticsDashboard() {
                                                     </CardTitle>
                                                 </CardHeader>
                                                 <CardContent>
-                                                    {user.session.fieldWork?.fieldNotes?.length > 0 ? (
+                                                    {selectedAttempt.fieldWork.fieldNotes?.length > 0 ? (
                                                         <div className="mt-4 space-y-2">
-                                                            {session.fieldWork.fieldNotes.map((note, idx) => (
+                                                            {selectedAttempt.fieldWork.fieldNotes.map((note, idx) => (
                                                                 <div
                                                                     key={idx}
                                                                     className="flex items-center justify-between gap-4 p-2 rounded-lg bg-background shadow-sm text-sm"
