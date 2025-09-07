@@ -23,7 +23,7 @@ export async function PATCH(req: NextRequest) {
         if (!activeSession) {
             return NextResponse.json({error: "Nema aktivne sesije"}, {status: 404});
         }
-        const fieldWork = activeSession.fieldWork || { fieldNotes: [] };
+        const fieldWork:any = activeSession.fieldWork || { fieldNotes: [] };
 
         fieldWork.fieldNotes = [
             ...(fieldWork.fieldNotes || []),
@@ -35,7 +35,7 @@ export async function PATCH(req: NextRequest) {
             data: {fieldWork},
         });
 
-        const openSession = await prisma.clockSession.findFirst({
+        const openSession:any = await prisma.clockSession.findFirst({
             where: {
                 userId: userSession.id,
                 clockOutEventId: null,
