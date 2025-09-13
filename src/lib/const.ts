@@ -2,7 +2,7 @@ export const KNOWN_LOCATIONS = {
   vrnjci: {
     lat: 43.641421,
     lng: 20.910224,
-    city: "vrnjackabanja",
+    city: "vrnjci",
     locc: "Vrnjacka Banja",
   },
   cukojevac: {
@@ -20,7 +20,7 @@ export const KNOWN_LOCATIONS = {
 };
 
 export const predefinedLocations = [
-  { value: "vrnjackabanja", label: "Vrnjacka Banja" },
+  { value: "vrnjci", label: "Vrnjacka Banja" },
   { value: "cukojevac", label: "Čukojevac" },
   { value: "kraljevo", label: "Kraljevo" },
 ];
