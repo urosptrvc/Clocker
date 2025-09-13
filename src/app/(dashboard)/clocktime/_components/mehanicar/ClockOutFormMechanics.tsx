@@ -45,7 +45,7 @@ export function ClockOutFormMechanics({ load, setLocation, notes, setNotes, onSu
                             {predefinedLocations.map((loc) => (
                                 <SelectItem key={loc.value} value={loc.value}>{loc.label}</SelectItem>
                             ))}
-                            <SelectItem value="custom">Other (type manually)</SelectItem>
+                            <SelectItem value="custom">Drugo (rucni unos)</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
