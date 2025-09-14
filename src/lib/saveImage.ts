@@ -36,5 +36,5 @@ export async function saveImage(
     .webp({ quality: 70 })
     .toFile(filepath);
 
-  return `/uploads/${userId}/${formattedDate}/${clocktype}/${filename}`;
+  return `/api/uploads/${userId}/${formattedDate}/${clocktype}/${filename}`;
 }
